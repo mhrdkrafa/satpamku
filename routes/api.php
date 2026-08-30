@@ -72,6 +72,12 @@ Route::prefix('v1')->group(function () {
         // Resume / Full CV view & Visibility
         Route::get('/resume/{user?}', [\App\Http\Controllers\Api\V1\CandidateController::class, 'showResume']);
         Route::put('/visibility', [\App\Http\Controllers\Api\V1\CandidateController::class, 'updateVisibility']);
+
+        // Applications & Saved Jobs
+        Route::get('/applications', [\App\Http\Controllers\Api\V1\JobApplicationController::class, 'listCandidateApplications']);
+        Route::get('/applications/{application}', [\App\Http\Controllers\Api\V1\JobApplicationController::class, 'showApplication']);
+        Route::post('/applications/{application}/withdraw', [\App\Http\Controllers\Api\V1\JobApplicationController::class, 'withdraw']);
+        Route::get('/saved-jobs', [\App\Http\Controllers\Api\V1\JobApplicationController::class, 'listSavedJobs']);
     });
 
     // Public Job Discovery Endpoints
@@ -80,6 +86,12 @@ Route::prefix('v1')->group(function () {
         Route::get('/featured', [\App\Http\Controllers\Api\V1\JobController::class, 'featured']);
         Route::get('/urgent', [\App\Http\Controllers\Api\V1\JobController::class, 'urgent']);
         Route::get('/{slug}', [\App\Http\Controllers\Api\V1\JobController::class, 'show']);
+
+        // Authenticated Job Actions (Apply & Save)
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/{job}/apply', [\App\Http\Controllers\Api\V1\JobApplicationController::class, 'apply']);
+            Route::post('/{job}/save', [\App\Http\Controllers\Api\V1\JobApplicationController::class, 'toggleSaveJob']);
+        });
     });
 
     // Employer Job Management Endpoints (Protected)

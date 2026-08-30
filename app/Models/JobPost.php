@@ -128,6 +128,16 @@ class JobPost extends Model
         return $this->belongsTo(User::class, 'moderated_by');
     }
 
+    public function applications(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(JobApplication::class, 'job_post_id');
+    }
+
+    public function savedBy(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(SavedJob::class, 'job_post_id');
+    }
+
     // ==========================================
     // SCOPES
     // ==========================================

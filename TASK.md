@@ -64,19 +64,19 @@
 - [x] Shared widgets.
 
 ## Phase 7 — Candidate App
-- [ ] Onboarding.
-- [ ] Auth.
-- [ ] Home.
-- [ ] Search/filters.
-- [ ] Job detail.
-- [ ] Save job.
-- [ ] Apply.
-- [ ] Applications.
-- [ ] Profile.
-- [ ] Certifications.
-- [ ] Documents.
-- [ ] Notifications.
-- [ ] Settings.
+- [x] Onboarding.
+- [x] Auth.
+- [x] Home.
+- [x] Search/filters.
+- [x] Job detail.
+- [x] Save job.
+- [x] Apply.
+- [x] Applications.
+- [x] Profile.
+- [x] Certifications.
+- [x] Documents.
+- [x] Notifications.
+- [x] Settings.
 
 ## Phase 8 — Employer App
 - [ ] Dashboard.

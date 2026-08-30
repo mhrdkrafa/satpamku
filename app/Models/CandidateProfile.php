@@ -78,6 +78,16 @@ class CandidateProfile extends Model
         return $this->hasMany(CandidateDocument::class, 'candidate_id');
     }
 
+    public function applications(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(JobApplication::class, 'candidate_id')->latest('applied_at');
+    }
+
+    public function savedJobs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(SavedJob::class, 'candidate_id');
+    }
+
     /**
      * Recalculate profile completion percentage.
      */

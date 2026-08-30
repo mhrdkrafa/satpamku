@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/app_colors.dart';
+import '../../features/applications/screens/application_detail_screen.dart';
+import '../../features/applications/screens/applications_screen.dart';
+import '../../features/auth/screens/login_screen.dart';
+import '../../features/auth/screens/onboarding_screen.dart';
+import '../../features/auth/screens/register_screen.dart';
+import '../../features/jobs/screens/home_screen.dart';
+import '../../features/jobs/screens/job_detail_screen.dart';
+import '../../features/jobs/screens/search_screen.dart';
+import '../../features/profile/screens/add_experience_screen.dart';
+import '../../features/profile/screens/certifications_screen.dart';
+import '../../features/profile/screens/documents_screen.dart';
+import '../../features/profile/screens/edit_profile_screen.dart';
+import '../../features/profile/screens/experiences_screen.dart';
+import '../../features/profile/screens/profile_screen.dart';
+import '../../features/profile/screens/saved_jobs_screen.dart';
+import '../../features/profile/screens/settings_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
@@ -19,36 +35,102 @@ class AppRouter {
           GoRoute(
             path: '/',
             name: 'home',
-            builder: (context, state) => const _PlaceholderScreen(title: 'Beranda Satpamku', icon: Icons.home),
+            builder: (context, state) => const HomeScreen(),
           ),
           GoRoute(
             path: '/jobs',
             name: 'jobs',
-            builder: (context, state) => const _PlaceholderScreen(title: 'Lowongan Kerja Satpam', icon: Icons.work),
+            builder: (context, state) => const SearchScreen(),
           ),
           GoRoute(
             path: '/notifications',
             name: 'notifications',
-            builder: (context, state) => const _PlaceholderScreen(title: 'Notifikasi', icon: Icons.notifications),
+            builder: (context, state) => const ApplicationsScreen(),
           ),
           GoRoute(
             path: '/profile',
             name: 'profile',
-            builder: (context, state) => const _PlaceholderScreen(title: 'Profil Saya', icon: Icons.person),
+            builder: (context, state) => const ProfileScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/onboarding',
+        name: 'onboarding',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
         path: '/login',
         name: 'login',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Masuk ke Satpamku', icon: Icons.lock),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: '/register',
         name: 'register',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Daftar Akun Baru', icon: Icons.person_add),
+        builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/jobs/:slug',
+        name: 'job_detail',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final slug = state.pathParameters['slug'] ?? '';
+          return JobDetailScreen(slug: slug);
+        },
+      ),
+      GoRoute(
+        path: '/applications/:id',
+        name: 'application_detail',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+          return ApplicationDetailScreen(applicationId: id);
+        },
+      ),
+      GoRoute(
+        path: '/edit-profile',
+        name: 'edit_profile',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: '/experiences',
+        name: 'experiences',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ExperiencesScreen(),
+      ),
+      GoRoute(
+        path: '/experiences/add',
+        name: 'add_experience',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AddExperienceScreen(),
+      ),
+      GoRoute(
+        path: '/certifications',
+        name: 'certifications',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const CertificationsScreen(),
+      ),
+      GoRoute(
+        path: '/documents',
+        name: 'documents',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const DocumentsScreen(),
+      ),
+      GoRoute(
+        path: '/saved-jobs',
+        name: 'saved_jobs',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SavedJobsScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SettingsScreen(),
       ),
     ],
   );
@@ -103,9 +185,9 @@ class MainShellScreen extends StatelessWidget {
             label: 'Lowongan',
           ),
           NavigationDestination(
-            icon: Icon(Icons.notifications_none_outlined),
-            selectedIcon: Icon(Icons.notifications, color: AppColors.primary),
-            label: 'Notifikasi',
+            icon: Icon(Icons.assignment_outlined),
+            selectedIcon: Icon(Icons.assignment, color: AppColors.primary),
+            label: 'Lamaran',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
@@ -113,30 +195,6 @@ class MainShellScreen extends StatelessWidget {
             label: 'Akun',
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const _PlaceholderScreen({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 64, color: AppColors.primaryLight),
-            const SizedBox(height: 16),
-            Text(title, style: Theme.of(context).textTheme.titleLarge),
-          ],
-        ),
       ),
     );
   }
