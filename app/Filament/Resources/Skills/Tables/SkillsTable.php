@@ -5,6 +5,8 @@ namespace App\Filament\Resources\Skills\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class SkillsTable
@@ -13,7 +15,25 @@ class SkillsTable
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->label('Keahlian / Keterampilan')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold'),
+
+                TextColumn::make('category')
+                    ->label('Kategori Skill')
+                    ->badge()
+                    ->color('info')
+                    ->formatStateUsing(fn(?string $state) => $state ? strtoupper(str_replace('_', ' ', $state)) : 'UMUM'),
+
+                IconColumn::make('is_active')
+                    ->label('Aktif')
+                    ->boolean(),
+
+                TextColumn::make('sort_order')
+                    ->label('Urutan')
+                    ->sortable(),
             ])
             ->filters([
                 //
