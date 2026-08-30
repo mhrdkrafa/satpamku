@@ -62,6 +62,38 @@ class ProfileScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
+              if (user?.role == 'employer') ...[
+                AppCard(
+                  backgroundColor: AppColors.primary,
+                  onTap: () => context.go('/employer/dashboard'),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.business_center, color: AppColors.secondary, size: 28),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Portal Perusahaan BUJP',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Kelola lowongan kerja & tinjau pelamar masuk',
+                              style: theme.textTheme.bodySmall?.copyWith(color: AppColors.secondaryLight),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+              ],
               // User Card
               AppCard(
                 child: Column(

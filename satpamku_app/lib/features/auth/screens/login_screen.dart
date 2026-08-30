@@ -36,7 +36,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
 
     if (success && mounted) {
-      context.go('/');
+      final user = ref.read(authStateProvider).user;
+      if (user?.role == 'employer') {
+        context.go('/employer/dashboard');
+      } else {
+        context.go('/');
+      }
     }
   }
 
