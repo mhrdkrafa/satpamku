@@ -41,7 +41,7 @@ class JobPostDetailResource extends JsonResource
                 'id' => $this->employer?->id,
                 'company_name' => $this->employer?->company_name,
                 'slug' => $this->employer?->slug,
-                'logo_url' => $this->employer?->logo_path ? url('storage/' . $this->employer->logo_path) : null,
+                'logo_url' => $this->employer?->logo_path ? (str_starts_with($this->employer->logo_path, 'http') ? $this->employer->logo_path : Storage::disk('public')->url($this->employer->logo_path)) : null,
                 'description' => $this->employer?->description,
                 'address' => $this->employer?->address,
                 'city' => $this->employer?->city,

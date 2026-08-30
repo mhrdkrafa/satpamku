@@ -29,7 +29,7 @@ class EmployerDashboardScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.business_outlined),
-            onPressed: () => context.push('/employer/profile'),
+            onPressed: () => context.go('/employer/profile'),
           ),
         ],
       ),

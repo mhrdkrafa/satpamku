@@ -17,7 +17,7 @@ class EmployerProfileResource extends JsonResource
             'slug' => $this->slug,
             'nib' => $this->nib,
             'bujp_license_number' => $this->bujp_license_number,
-            'logo_url' => $this->logo_path ? Storage::disk('public')->url($this->logo_path) : null,
+            'logo_url' => $this->logo_path ? (str_starts_with($this->logo_path, 'http') ? $this->logo_path : Storage::disk('public')->url($this->logo_path)) : null,
             'banner_url' => $this->banner_path ? Storage::disk('public')->url($this->banner_path) : null,
             'description' => $this->description,
             'industry' => $this->industry,

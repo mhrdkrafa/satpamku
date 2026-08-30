@@ -15,10 +15,11 @@ class JobPostListResource extends JsonResource
             'slug' => $this->slug,
             'employer' => [
                 'id' => $this->employer?->id,
-                'company_name' => $this->employer?->company_name,
+                'company_name' => $this->employer?->company_name ?? 'Perusahaan BUJP',
                 'slug' => $this->employer?->slug,
-                'logo_url' => $this->employer?->logo_path ? url('storage/' . $this->employer->logo_path) : null,
+                'logo_url' => $this->employer?->logo_path ? (str_starts_with($this->employer->logo_path, 'http') ? $this->employer->logo_path : Storage::disk('public')->url($this->employer->logo_path)) : null,
                 'city' => $this->employer?->city,
+                'is_verified' => $this->employer?->is_verified ?? false,
                 'verification_status' => $this->employer?->verification_status,
             ],
             'category' => [
