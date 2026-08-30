@@ -33,4 +33,15 @@ Route::prefix('v1')->group(function () {
         Route::put('/employer', [ProfileController::class, 'updateEmployer']);
         Route::post('/avatar', [ProfileController::class, 'uploadAvatar']);
     });
+
+    // Taxonomy Endpoints (Public)
+    Route::prefix('taxonomy')->group(function () {
+        Route::get('/locations', [\App\Http\Controllers\Api\V1\TaxonomyController::class, 'locations']);
+        Route::get('/categories', [\App\Http\Controllers\Api\V1\TaxonomyController::class, 'categories']);
+        Route::get('/positions', [\App\Http\Controllers\Api\V1\TaxonomyController::class, 'positions']);
+        Route::get('/facilities', [\App\Http\Controllers\Api\V1\TaxonomyController::class, 'facilities']);
+        Route::get('/skills', [\App\Http\Controllers\Api\V1\TaxonomyController::class, 'skills']);
+        Route::get('/certifications', [\App\Http\Controllers\Api\V1\TaxonomyController::class, 'certifications']);
+        Route::get('/all', [\App\Http\Controllers\Api\V1\TaxonomyController::class, 'all']);
+    });
 });

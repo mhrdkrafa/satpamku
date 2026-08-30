@@ -27,13 +27,13 @@
 - [x] Auth tests.
 
 ## Phase 3 — Taxonomy
-- [ ] Locations.
-- [ ] Categories.
-- [ ] Positions.
-- [ ] Facilities.
-- [ ] Skills.
-- [ ] Certifications.
-- [ ] Filament management.
+- [x] Locations.
+- [x] Categories.
+- [x] Positions.
+- [x] Facilities.
+- [x] Skills.
+- [x] Certifications.
+- [x] Filament management.
 
 ## Phase 4 — Candidate
 - [ ] Experience.
