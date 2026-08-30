@@ -97,18 +97,18 @@
 - [x] Certificate expiry notification.
 
 ## Phase 10 — CMS/Admin
-- [ ] Website settings.
-- [ ] Homepage sections.
-- [ ] Hero/banner.
-- [ ] Featured jobs.
-- [ ] Categories/employers.
-- [ ] Career resources.
-- [ ] FAQ.
-- [ ] Menus.
-- [ ] SEO.
-- [ ] Section ordering.
-- [ ] Admin dashboard.
-- [ ] Audit logs.
+- [x] Website settings.
+- [x] Homepage sections.
+- [x] Hero/banner.
+- [x] Featured jobs.
+- [x] Categories/employers.
+- [x] Career resources.
+- [x] FAQ.
+- [x] Menus.
+- [x] SEO.
+- [x] Section ordering.
+- [x] Admin dashboard.
+- [x] Audit logs.
 
 ## Phase 11 — Recommendations
 - [ ] Define explainable scoring.

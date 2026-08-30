@@ -45,6 +45,16 @@ Route::prefix('v1')->group(function () {
         Route::get('/all', [\App\Http\Controllers\Api\V1\TaxonomyController::class, 'all']);
     });
 
+    // Public CMS & Website Content Endpoints
+    Route::prefix('cms')->group(function () {
+        Route::get('/settings', [\App\Http\Controllers\Api\V1\CmsController::class, 'settings']);
+        Route::get('/banners', [\App\Http\Controllers\Api\V1\CmsController::class, 'banners']);
+        Route::get('/homepage', [\App\Http\Controllers\Api\V1\CmsController::class, 'homepage']);
+        Route::get('/articles', [\App\Http\Controllers\Api\V1\CmsController::class, 'articles']);
+        Route::get('/articles/{slug}', [\App\Http\Controllers\Api\V1\CmsController::class, 'articleDetail']);
+        Route::get('/faqs', [\App\Http\Controllers\Api\V1\CmsController::class, 'faqs']);
+    });
+
     // Candidate Domain Endpoints (Protected)
     Route::middleware('auth:sanctum')->prefix('candidate')->group(function () {
         // Experiences
