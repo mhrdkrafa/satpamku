@@ -72,4 +72,11 @@ class JobRepository {
         .map((j) => JobModel.fromJson(j as Map<String, dynamic>))
         .toList();
   }
+
+  Future<List<JobModel>> getRecommendations({int limit = 10}) async {
+    final response = await _apiClient.get('/candidate/recommendations', queryParameters: {'limit': limit});
+    return (response.data['data'] as List)
+        .map((j) => JobModel.fromJson(j as Map<String, dynamic>))
+        .toList();
+  }
 }

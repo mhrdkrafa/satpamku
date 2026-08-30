@@ -88,6 +88,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/applications/{application}', [\App\Http\Controllers\Api\V1\JobApplicationController::class, 'showApplication']);
         Route::post('/applications/{application}/withdraw', [\App\Http\Controllers\Api\V1\JobApplicationController::class, 'withdraw']);
         Route::get('/saved-jobs', [\App\Http\Controllers\Api\V1\JobApplicationController::class, 'listSavedJobs']);
+
+        // Tailored Recommendations
+        Route::get('/recommendations', [\App\Http\Controllers\Api\V1\JobRecommendationController::class, 'index']);
     });
 
     // Public Job Discovery Endpoints

@@ -17,6 +17,8 @@ class JobModel {
   final String requiredCertificateLevel;
   final bool isUrgent;
   final bool isFeatured;
+  final int? matchScore;
+  final List<String> matchReasons;
   final DateTime? publishedAt;
 
   JobModel({
@@ -36,6 +38,8 @@ class JobModel {
     required this.requiredCertificateLevel,
     this.isUrgent = false,
     this.isFeatured = false,
+    this.matchScore,
+    this.matchReasons = const [],
     this.publishedAt,
   });
 
@@ -43,6 +47,8 @@ class JobModel {
     final employer = json['employer'] as Map<String, dynamic>?;
     final category = json['category'] as Map<String, dynamic>?;
     final location = json['location'] as Map<String, dynamic>?;
+
+    final reasonsList = (json['match_reasons'] as List?)?.map((r) => r.toString()).toList() ?? [];
 
     return JobModel(
       id: json['id'] as int,
@@ -55,12 +61,14 @@ class JobModel {
       categoryIcon: category?['icon'] as String?,
       locationName: location?['name'] as String? ?? 'Indonesia',
       shiftType: json['shift_type'] as String? ?? '2_shift',
-      salaryMin: json['salary_min'] as int?,
-      salaryMax: json['salary_max'] as int?,
+      salaryMin: (json['salary_min'] as num?)?.toInt(),
+      salaryMax: (json['salary_max'] as num?)?.toInt(),
       salaryIsHidden: json['salary_is_hidden'] as bool? ?? false,
       requiredCertificateLevel: json['required_certificate_level'] as String? ?? 'none',
       isUrgent: json['is_urgent'] as bool? ?? false,
       isFeatured: json['is_featured'] as bool? ?? false,
+      matchScore: (json['match_score'] as num?)?.toInt(),
+      matchReasons: reasonsList,
       publishedAt: json['published_at'] != null ? DateTime.tryParse(json['published_at']) : null,
     );
   }

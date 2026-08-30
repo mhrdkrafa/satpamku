@@ -111,13 +111,13 @@
 - [x] Audit logs.
 
 ## Phase 11 — Recommendations
-- [ ] Define explainable scoring.
-- [ ] Location match.
-- [ ] Position match.
-- [ ] Certification match.
-- [ ] Experience match.
-- [ ] Salary compatibility.
-- [ ] Recommendation API/UI/tests.
+- [x] Define explainable scoring.
+- [x] Location match.
+- [x] Position match.
+- [x] Certification match.
+- [x] Experience match.
+- [x] Salary compatibility.
+- [x] Recommendation API/UI/tests.
 
 ## Phase 12 — QA/Security
 - [ ] API authorization audit.

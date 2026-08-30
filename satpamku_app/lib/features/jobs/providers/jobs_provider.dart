@@ -111,3 +111,9 @@ final savedJobsProvider = FutureProvider.autoDispose<List<JobModel>>((ref) async
   final repository = ref.watch(jobRepositoryProvider);
   return repository.getSavedJobs();
 });
+
+// Tailored Recommendations Provider
+final recommendedJobsProvider = FutureProvider.autoDispose<List<JobModel>>((ref) async {
+  final repository = ref.watch(jobRepositoryProvider);
+  return repository.getRecommendations();
+});

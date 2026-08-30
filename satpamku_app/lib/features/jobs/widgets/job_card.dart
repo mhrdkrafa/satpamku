@@ -80,6 +80,13 @@ class JobCard extends StatelessWidget {
             spacing: AppSpacing.xs,
             runSpacing: AppSpacing.xs,
             children: [
+              if (job.matchScore != null)
+                AppBadge(
+                  label: '${job.matchScore}% Cocok',
+                  variant: job.matchScore! >= 80 ? AppBadgeVariant.success : AppBadgeVariant.secondary,
+                  icon: Icons.verified_user,
+                  isSmall: true,
+                ),
               if (job.isUrgent) AppBadge.urgent(),
               if (job.requiredCertificateLevel != 'none')
                 AppBadge.certificate(job.requiredCertificateLevel),
