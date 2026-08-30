@@ -44,4 +44,33 @@ Route::prefix('v1')->group(function () {
         Route::get('/certifications', [\App\Http\Controllers\Api\V1\TaxonomyController::class, 'certifications']);
         Route::get('/all', [\App\Http\Controllers\Api\V1\TaxonomyController::class, 'all']);
     });
+
+    // Candidate Domain Endpoints (Protected)
+    Route::middleware('auth:sanctum')->prefix('candidate')->group(function () {
+        // Experiences
+        Route::get('/experiences', [\App\Http\Controllers\Api\V1\CandidateController::class, 'listExperiences']);
+        Route::post('/experiences', [\App\Http\Controllers\Api\V1\CandidateController::class, 'storeExperience']);
+        Route::put('/experiences/{experience}', [\App\Http\Controllers\Api\V1\CandidateController::class, 'updateExperience']);
+        Route::delete('/experiences/{experience}', [\App\Http\Controllers\Api\V1\CandidateController::class, 'destroyExperience']);
+
+        // Skills
+        Route::get('/skills', [\App\Http\Controllers\Api\V1\CandidateController::class, 'listSkills']);
+        Route::post('/skills/sync', [\App\Http\Controllers\Api\V1\CandidateController::class, 'syncSkills']);
+
+        // Certifications
+        Route::get('/certifications', [\App\Http\Controllers\Api\V1\CandidateController::class, 'listCertifications']);
+        Route::post('/certifications', [\App\Http\Controllers\Api\V1\CandidateController::class, 'storeCertification']);
+        Route::get('/certifications/{certification}/file', [\App\Http\Controllers\Api\V1\CandidateController::class, 'downloadCertificationFile']);
+        Route::delete('/certifications/{certification}', [\App\Http\Controllers\Api\V1\CandidateController::class, 'destroyCertification']);
+
+        // Documents (CV, KTP, SKCK, etc.)
+        Route::get('/documents', [\App\Http\Controllers\Api\V1\CandidateController::class, 'listDocuments']);
+        Route::post('/documents', [\App\Http\Controllers\Api\V1\CandidateController::class, 'storeDocument']);
+        Route::get('/documents/{document}/file', [\App\Http\Controllers\Api\V1\CandidateController::class, 'downloadDocumentFile']);
+        Route::delete('/documents/{document}', [\App\Http\Controllers\Api\V1\CandidateController::class, 'destroyDocument']);
+
+        // Resume / Full CV view & Visibility
+        Route::get('/resume/{user?}', [\App\Http\Controllers\Api\V1\CandidateController::class, 'showResume']);
+        Route::put('/visibility', [\App\Http\Controllers\Api\V1\CandidateController::class, 'updateVisibility']);
+    });
 });

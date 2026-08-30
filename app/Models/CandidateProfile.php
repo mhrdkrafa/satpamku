@@ -51,6 +51,33 @@ class CandidateProfile extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function experiences(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Experience::class, 'candidate_id')->orderBy('start_date', 'desc');
+    }
+
+    public function candidateSkills(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CandidateSkill::class, 'candidate_id');
+    }
+
+    public function skills(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Skill::class, 'candidate_skill', 'candidate_id', 'skill_id')
+            ->withPivot('level')
+            ->withTimestamps();
+    }
+
+    public function certifications(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CandidateCertification::class, 'candidate_id');
+    }
+
+    public function documents(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CandidateDocument::class, 'candidate_id');
+    }
+
     /**
      * Recalculate profile completion percentage.
      */

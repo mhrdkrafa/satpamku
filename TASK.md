@@ -36,13 +36,13 @@
 - [x] Filament management.
 
 ## Phase 4 — Candidate
-- [ ] Experience.
-- [ ] Skills.
-- [ ] Certifications.
-- [ ] CV/documents.
-- [ ] Profile visibility.
-- [ ] Verification.
-- [ ] Certificate expiry reminders.
+- [x] Experience.
+- [x] Skills.
+- [x] Certifications.
+- [x] CV/documents.
+- [x] Profile visibility.
+- [x] Verification.
+- [x] Certificate expiry reminders.
 
 ## Phase 5 — Employer & Jobs
 - [ ] Employer profile.
