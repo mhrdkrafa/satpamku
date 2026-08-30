@@ -63,6 +63,12 @@ class JobApplicationController extends Controller
             return $app;
         });
 
+        // Notify employer
+        $employerUser = $job->employer?->user;
+        if ($employerUser) {
+            $employerUser->notify(new \App\Notifications\NewApplicationNotification($application));
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Lamaran berhasil dikirim ke perusahaan.',

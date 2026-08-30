@@ -233,6 +233,12 @@ class EmployerApplicantController extends Controller
             'employer_notes' => $validated['employer_notes'] ?? $application->employer_notes,
         ]);
 
+        // Notify candidate
+        $candidateUser = $application->candidate?->user;
+        if ($candidateUser) {
+            $candidateUser->notify(new \App\Notifications\ApplicationStatusNotification($application, $validated['status']));
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Status pelamar berhasil diperbarui.',

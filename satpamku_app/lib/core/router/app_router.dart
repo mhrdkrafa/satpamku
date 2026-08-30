@@ -15,6 +15,7 @@ import '../../features/employer/screens/employer_profile_screen.dart';
 import '../../features/jobs/screens/home_screen.dart';
 import '../../features/jobs/screens/job_detail_screen.dart';
 import '../../features/jobs/screens/search_screen.dart';
+import '../../features/notifications/screens/notifications_screen.dart';
 import '../../features/profile/screens/add_experience_screen.dart';
 import '../../features/profile/screens/certifications_screen.dart';
 import '../../features/profile/screens/documents_screen.dart';
@@ -51,7 +52,7 @@ class AppRouter {
           GoRoute(
             path: '/notifications',
             name: 'notifications',
-            builder: (context, state) => const ApplicationsScreen(),
+            builder: (context, state) => const NotificationsScreen(),
           ),
           GoRoute(
             path: '/profile',
@@ -86,6 +87,12 @@ class AppRouter {
           final slug = state.pathParameters['slug'] ?? '';
           return JobDetailScreen(slug: slug);
         },
+      ),
+      GoRoute(
+        path: '/applications',
+        name: 'applications',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ApplicationsScreen(),
       ),
       GoRoute(
         path: '/applications/:id',
@@ -241,9 +248,9 @@ class MainShellScreen extends StatelessWidget {
             label: 'Lowongan',
           ),
           NavigationDestination(
-            icon: Icon(Icons.assignment_outlined),
-            selectedIcon: Icon(Icons.assignment, color: AppColors.primary),
-            label: 'Lamaran',
+            icon: Icon(Icons.notifications_none_outlined),
+            selectedIcon: Icon(Icons.notifications, color: AppColors.primary),
+            label: 'Notifikasi',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),

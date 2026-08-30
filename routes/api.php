@@ -110,4 +110,14 @@ Route::prefix('v1')->group(function () {
             Route::delete('/{job}', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'destroy']);
         });
     });
+
+    // Notifications & Device Tokens (Protected)
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/notifications', [\App\Http\Controllers\Api\V1\NotificationController::class, 'index']);
+        Route::put('/notifications/read-all', [\App\Http\Controllers\Api\V1\NotificationController::class, 'markAllAsRead']);
+        Route::put('/notifications/{id}/read', [\App\Http\Controllers\Api\V1\NotificationController::class, 'markAsRead']);
+
+        Route::post('/device-token', [\App\Http\Controllers\Api\V1\NotificationController::class, 'storeDeviceToken']);
+        Route::delete('/device-token', [\App\Http\Controllers\Api\V1\NotificationController::class, 'destroyDeviceToken']);
+    });
 });

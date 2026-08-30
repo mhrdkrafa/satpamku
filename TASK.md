@@ -89,12 +89,12 @@
 - [x] Statistics.
 
 ## Phase 9 — Notifications
-- [ ] Firebase/FCM setup.
-- [ ] Device token API.
-- [ ] Notification events.
-- [ ] Push delivery.
-- [ ] In-app history.
-- [ ] Certificate expiry notification.
+- [x] Firebase/FCM setup.
+- [x] Device token API.
+- [x] Notification events.
+- [x] Push delivery.
+- [x] In-app history.
+- [x] Certificate expiry notification.
 
 ## Phase 10 — CMS/Admin
 - [ ] Website settings.

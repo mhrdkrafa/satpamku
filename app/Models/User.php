@@ -69,6 +69,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(EmployerProfile::class);
     }
 
+    public function deviceTokens(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(DeviceToken::class);
+    }
+
     /**
      * Determine if user can access the Filament panel.
      */
