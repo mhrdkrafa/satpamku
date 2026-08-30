@@ -100,7 +100,7 @@ class EmployerDashboardScreen extends ConsumerWidget {
                       value: dashboard.activeJobs.toString(),
                       icon: Icons.work_outline,
                       color: AppColors.primary,
-                      onTap: () => context.push('/employer/jobs'),
+                      onTap: () => context.go('/employer/jobs'),
                     ),
                     _buildMetricCard(
                       context,
@@ -108,7 +108,7 @@ class EmployerDashboardScreen extends ConsumerWidget {
                       value: dashboard.totalApplicants.toString(),
                       icon: Icons.people_outline,
                       color: AppColors.info,
-                      onTap: () => context.push('/employer/applicants'),
+                      onTap: () => context.go('/employer/applicants'),
                     ),
                     _buildMetricCard(
                       context,
@@ -118,7 +118,7 @@ class EmployerDashboardScreen extends ConsumerWidget {
                       color: AppColors.warning,
                       onTap: () {
                         ref.read(employerApplicantFilterProvider.notifier).state = const ApplicantFilter(status: 'submitted');
-                        context.push('/employer/applicants');
+                        context.go('/employer/applicants');
                       },
                     ),
                     _buildMetricCard(
@@ -129,7 +129,7 @@ class EmployerDashboardScreen extends ConsumerWidget {
                       color: AppColors.success,
                       onTap: () {
                         ref.read(employerApplicantFilterProvider.notifier).state = const ApplicantFilter(status: 'interview_scheduled');
-                        context.push('/employer/applicants');
+                        context.go('/employer/applicants');
                       },
                     ),
                   ],
@@ -145,7 +145,7 @@ class EmployerDashboardScreen extends ConsumerWidget {
                         text: 'Kelola Lowongan',
                         variant: AppButtonVariant.outline,
                         icon: Icons.list_alt,
-                        onPressed: () => context.push('/employer/jobs'),
+                        onPressed: () => context.go('/employer/jobs'),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.md),
@@ -154,7 +154,7 @@ class EmployerDashboardScreen extends ConsumerWidget {
                         text: 'Pipeline Pelamar',
                         variant: AppButtonVariant.primary,
                         icon: Icons.filter_alt_outlined,
-                        onPressed: () => context.push('/employer/applicants'),
+                        onPressed: () => context.go('/employer/applicants'),
                       ),
                     ),
                   ],
