@@ -44,13 +44,13 @@ class NotificationSeeder extends Seeder
                 ->first();
 
             if ($appInterview) {
-                $budiUser->notify(new ApplicationStatusNotification($appInterview, 'interview_scheduled'));
+                $budiUser->notifyNow(new ApplicationStatusNotification($appInterview, 'interview_scheduled'));
             }
 
-            // Also send a certificate reminder if candidate has a certification
+            // Certificate reminder
             $cert = $budiUser->candidateProfile?->certifications()->first();
             if ($cert) {
-                $budiUser->notify(new CertificateExpiryNotification($cert, 'near_expiry'));
+                $budiUser->notifyNow(new CertificateExpiryNotification($cert, 'near_expiry'));
             }
         }
 
@@ -60,16 +60,22 @@ class NotificationSeeder extends Seeder
                 ->first();
 
             if ($appAccepted) {
-                $bambangUser->notify(new ApplicationStatusNotification($appAccepted, 'accepted'));
+                $bambangUser->notifyNow(new ApplicationStatusNotification($appAccepted, 'accepted'));
+            }
+        }
+
+        // Seed notifications for Employers
+        if ($nawakaraUser) {
+            $appsNawakara = JobApplication::whereHas('jobPost.employer.user', fn($q) => $q->where('id', $nawakaraUser->id))->get();
+            foreach ($appsNawakara as $app) {
+                $nawakaraUser->notifyNow(new NewApplicationNotification($app));
             }
         }
 
         if ($sigapUser) {
-            $appSigap = JobApplication::whereHas('jobPost.employer.user', fn($q) => $q->where('id', $sigapUser->id))
-                ->first();
-
-            if ($appSigap) {
-                $sigapUser->notify(new NewApplicationNotification($appSigap));
+            $appsSigap = JobApplication::whereHas('jobPost.employer.user', fn($q) => $q->where('id', $sigapUser->id))->get();
+            foreach ($appsSigap as $app) {
+                $sigapUser->notifyNow(new NewApplicationNotification($app));
             }
         }
     }

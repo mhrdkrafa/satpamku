@@ -36,10 +36,18 @@ class NotificationsScreen extends ConsumerWidget {
         child: notifsAsync.when(
           data: (response) {
             if (response.items.isEmpty) {
-              return const EmptyStateWidget(
-                title: 'Belum Ada Notifikasi',
-                message: 'Pemberitahuan status lamaran, undangan interview, dan masa berlaku sertifikat akan muncul di sini.',
-                icon: Icons.notifications_none_outlined,
+              return LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    child: const EmptyStateWidget(
+                      title: 'Belum Ada Notifikasi',
+                      message: 'Pemberitahuan status lamaran, undangan interview, dan masa berlaku sertifikat akan muncul di sini.',
+                      icon: Icons.notifications_none_outlined,
+                    ),
+                  ),
+                ),
               );
             }
 
