@@ -53,4 +53,9 @@ class EmployerProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function jobPosts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(JobPost::class, 'employer_id');
+    }
 }

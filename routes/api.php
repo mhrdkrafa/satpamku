@@ -73,4 +73,22 @@ Route::prefix('v1')->group(function () {
         Route::get('/resume/{user?}', [\App\Http\Controllers\Api\V1\CandidateController::class, 'showResume']);
         Route::put('/visibility', [\App\Http\Controllers\Api\V1\CandidateController::class, 'updateVisibility']);
     });
+
+    // Public Job Discovery Endpoints
+    Route::prefix('jobs')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Api\V1\JobController::class, 'index']);
+        Route::get('/featured', [\App\Http\Controllers\Api\V1\JobController::class, 'featured']);
+        Route::get('/urgent', [\App\Http\Controllers\Api\V1\JobController::class, 'urgent']);
+        Route::get('/{slug}', [\App\Http\Controllers\Api\V1\JobController::class, 'show']);
+    });
+
+    // Employer Job Management Endpoints (Protected)
+    Route::middleware('auth:sanctum')->prefix('employer/jobs')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'index']);
+        Route::post('/', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'store']);
+        Route::get('/{job}', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'show']);
+        Route::put('/{job}', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'update']);
+        Route::put('/{job}/status', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'changeStatus']);
+        Route::delete('/{job}', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'destroy']);
+    });
 });

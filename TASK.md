@@ -45,12 +45,12 @@
 - [x] Certificate expiry reminders.
 
 ## Phase 5 — Employer & Jobs
-- [ ] Employer profile.
-- [ ] Job CRUD.
-- [ ] Draft/review/publish/pause/close.
-- [ ] Moderation.
-- [ ] Job detail API.
-- [ ] Search/filter/sort API.
+- [x] Employer profile.
+- [x] Job CRUD.
+- [x] Draft/review/publish/pause/close.
+- [x] Moderation.
+- [x] Job detail API.
+- [x] Search/filter/sort API.
 
 ## Phase 6 — Flutter Foundation
 - [ ] Flutter project.
