@@ -6,6 +6,12 @@ import '../../features/applications/screens/applications_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
+import '../../features/employer/screens/create_edit_job_screen.dart';
+import '../../features/employer/screens/employer_applicant_detail_screen.dart';
+import '../../features/employer/screens/employer_applicants_screen.dart';
+import '../../features/employer/screens/employer_dashboard_screen.dart';
+import '../../features/employer/screens/employer_jobs_screen.dart';
+import '../../features/employer/screens/employer_profile_screen.dart';
 import '../../features/jobs/screens/home_screen.dart';
 import '../../features/jobs/screens/job_detail_screen.dart';
 import '../../features/jobs/screens/search_screen.dart';
@@ -131,6 +137,56 @@ class AppRouter {
         name: 'settings',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const SettingsScreen(),
+      ),
+
+      // Employer App Routes
+      GoRoute(
+        path: '/employer/dashboard',
+        name: 'employer_dashboard',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const EmployerDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/employer/jobs',
+        name: 'employer_jobs',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const EmployerJobsScreen(),
+      ),
+      GoRoute(
+        path: '/employer/jobs/create',
+        name: 'employer_job_create',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const CreateEditJobScreen(),
+      ),
+      GoRoute(
+        path: '/employer/jobs/:id/edit',
+        name: 'employer_job_edit',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final id = int.tryParse(state.pathParameters['id'] ?? '0');
+          return CreateEditJobScreen(jobId: id);
+        },
+      ),
+      GoRoute(
+        path: '/employer/applicants',
+        name: 'employer_applicants',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const EmployerApplicantsScreen(),
+      ),
+      GoRoute(
+        path: '/employer/applicants/:id',
+        name: 'employer_applicant_detail',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+          return EmployerApplicantDetailScreen(applicationId: id);
+        },
+      ),
+      GoRoute(
+        path: '/employer/profile',
+        name: 'employer_profile',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const EmployerProfileScreen(),
       ),
     ],
   );

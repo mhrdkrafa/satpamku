@@ -94,13 +94,20 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-    // Employer Job Management Endpoints (Protected)
-    Route::middleware('auth:sanctum')->prefix('employer/jobs')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'index']);
-        Route::post('/', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'store']);
-        Route::get('/{job}', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'show']);
-        Route::put('/{job}', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'update']);
-        Route::put('/{job}/status', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'changeStatus']);
-        Route::delete('/{job}', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'destroy']);
+    // Employer Job & Applicant Management Endpoints (Protected)
+    Route::middleware('auth:sanctum')->prefix('employer')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Api\V1\EmployerApplicantController::class, 'dashboard']);
+        Route::get('/applicants', [\App\Http\Controllers\Api\V1\EmployerApplicantController::class, 'index']);
+        Route::get('/applicants/{application}', [\App\Http\Controllers\Api\V1\EmployerApplicantController::class, 'show']);
+        Route::put('/applicants/{application}/status', [\App\Http\Controllers\Api\V1\EmployerApplicantController::class, 'changeStatus']);
+
+        Route::prefix('jobs')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'index']);
+            Route::post('/', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'store']);
+            Route::get('/{job}', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'show']);
+            Route::put('/{job}', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'update']);
+            Route::put('/{job}/status', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'changeStatus']);
+            Route::delete('/{job}', [\App\Http\Controllers\Api\V1\EmployerJobController::class, 'destroy']);
+        });
     });
 });

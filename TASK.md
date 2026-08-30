@@ -79,14 +79,14 @@
 - [x] Settings.
 
 ## Phase 8 — Employer App
-- [ ] Dashboard.
-- [ ] Job management.
-- [ ] Create/edit job.
-- [ ] Applicants.
-- [ ] Applicant detail.
-- [ ] Recruitment pipeline.
-- [ ] Status changes.
-- [ ] Statistics.
+- [x] Dashboard.
+- [x] Job management.
+- [x] Create/edit job.
+- [x] Applicants.
+- [x] Applicant detail.
+- [x] Recruitment pipeline.
+- [x] Status changes.
+- [x] Statistics.
 
 ## Phase 9 — Notifications
 - [ ] Firebase/FCM setup.
