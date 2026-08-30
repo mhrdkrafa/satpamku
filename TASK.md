@@ -53,14 +53,15 @@
 - [x] Search/filter/sort API.
 
 ## Phase 6 — Flutter Foundation
-- [ ] Flutter project.
-- [ ] Stitch-derived theme/tokens.
-- [ ] GoRouter.
-- [ ] Riverpod.
-- [ ] Dio client.
-- [ ] Secure storage.
-- [ ] Error handling.
-- [ ] Shared widgets.
+- [x] Flutter project.
+- [x] Theme/colors/typography/elevation/spacing.
+- [x] Reusable components.
+- [x] Router.
+- [x] Secure storage.
+- [x] Dio client.
+- [x] Base state/error/empty UI.
+- [x] Error handling.
+- [x] Shared widgets.
 
 ## Phase 7 — Candidate App
 - [ ] Onboarding.
