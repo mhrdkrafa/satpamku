@@ -14,6 +14,7 @@ class AuthRepository {
 
   Future<UserModel> login({required String username, required String password}) async {
     final response = await _apiClient.post('/auth/login', data: {
+      'login': username,
       'username': username,
       'password': password,
     });

@@ -127,7 +127,7 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $login = $request->input('login');
+        $login = $request->input('login') ?? $request->input('username') ?? $request->input('email');
         $password = $request->input('password');
 
         $user = User::where('email', $login)

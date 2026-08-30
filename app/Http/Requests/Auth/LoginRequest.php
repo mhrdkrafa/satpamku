@@ -14,9 +14,20 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'login' => ['required', 'string'], // email or phone
+            'login' => ['nullable', 'string'],
+            'username' => ['nullable', 'string'],
+            'email' => ['nullable', 'string'],
             'password' => ['required', 'string'],
             'device_name' => ['nullable', 'string', 'max:255'],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if (empty($this->login) && empty($this->username) && empty($this->email)) {
+                $validator->errors()->add('login', 'Email atau Nomor WhatsApp wajib diisi.');
+            }
+        });
     }
 }
