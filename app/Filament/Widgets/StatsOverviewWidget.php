@@ -17,10 +17,10 @@ class StatsOverviewWidget extends BaseWidget
     protected function getStats(): array
     {
         $totalCandidates = User::where('role', 'candidate')->count();
-        $verifiedCerts = CandidateCertification::where('status', 'verified')->count();
+        $verifiedCerts = CandidateCertification::where('verification_status', 'verified')->count();
         $totalEmployers = EmployerProfile::count();
         $activeJobs = JobPost::where('status', 'published')->count();
-        $pendingVerifications = CandidateCertification::where('status', 'pending')->count();
+        $pendingVerifications = CandidateCertification::where('verification_status', 'pending')->count();
 
         return [
             Stat::make('Total Kandidat Satpam', $totalCandidates)

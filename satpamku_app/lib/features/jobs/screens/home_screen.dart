@@ -109,7 +109,7 @@ class HomeScreen extends ConsumerWidget {
                             const SizedBox(height: 2),
                             Text(
                               user != null
-                                  ? 'Kualifikasi: ${user.highestCertificateLevel == 'none' ? 'Non-Sertifikat' : user.highestCertificateLevel.toUpperCase()}'
+                                  ? 'Kualifikasi: ${user.highestCertificateLevel == null || user.highestCertificateLevel == 'none' ? 'Non-Sertifikat' : user.highestCertificateLevel!.toUpperCase()}'
                                   : 'Portal Karir Satpam Indonesia',
                               style: theme.textTheme.bodySmall?.copyWith(color: AppColors.secondaryLight),
                             ),

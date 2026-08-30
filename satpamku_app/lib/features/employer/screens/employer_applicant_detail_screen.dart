@@ -207,8 +207,11 @@ class _EmployerApplicantDetailScreenState extends ConsumerState<EmployerApplican
                       const Divider(height: AppSpacing.md),
                       _buildInfoRow('Tinggi Badan', cand.heightCm != null ? '${cand.heightCm} cm' : '-'),
                       _buildInfoRow('Berat Badan', cand.weightKg != null ? '${cand.weightKg} kg' : '-'),
-                      _buildInfoRow('Golongan Darah', cand.bloodType ?? '-'),
                       _buildInfoRow('SIM Dimiliki', [
+                        if (cand.hasSimA) 'SIM A',
+                        if (cand.hasSimB1) 'SIM B1',
+                        if (cand.hasSimC) 'SIM C',
+                      ].isEmpty ? '-' : [
                         if (cand.hasSimA) 'SIM A',
                         if (cand.hasSimB1) 'SIM B1',
                         if (cand.hasSimC) 'SIM C',
