@@ -41,6 +41,31 @@ class JobApplicationModel {
   String get salaryRange => job.formattedSalary;
   String get shiftType => job.shiftType;
 
+  String get statusLabel {
+    switch (status) {
+      case 'interview_scheduled':
+        return 'Interview';
+      case 'reviewing':
+        return 'Reviewed';
+      case 'accepted':
+      case 'offered':
+        return 'Offered';
+      case 'shortlisted':
+        return 'Shortlisted';
+      case 'rejected':
+        return 'Rejected';
+      default:
+        return 'Active';
+    }
+  }
+
+  String get appliedTimeAgo {
+    final diff = DateTime.now().difference(appliedAt);
+    if (diff.inDays > 0) return '${diff.inDays} days ago';
+    if (diff.inHours > 0) return '${diff.inHours} hours ago';
+    return 'Just now';
+  }
+
   String get statusDisplay {
     switch (status) {
       case 'submitted':
