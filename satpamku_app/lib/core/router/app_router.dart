@@ -32,19 +32,24 @@ import '../../features/profile/screens/profile_screen.dart';
 import '../../features/profile/screens/saved_jobs_screen.dart';
 import '../../features/profile/screens/settings_screen.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
+final routerProvider = Provider<GoRouter>((ref) {
+  return AppRouter.createRouter();
+});
 
 class AppRouter {
-  static final GoRouter router = GoRouter(
-    navigatorKey: _rootNavigatorKey,
-    initialLocation: '/splash',
-    routes: [
-      ShellRoute(
-        navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) {
-          return MainShellScreen(child: child);
-        },
+  static GoRouter createRouter() {
+    final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root_${DateTime.now().microsecondsSinceEpoch}');
+    final shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell_${DateTime.now().microsecondsSinceEpoch}');
+
+    return GoRouter(
+      navigatorKey: rootNavigatorKey,
+      initialLocation: '/splash',
+      routes: [
+        ShellRoute(
+          navigatorKey: shellNavigatorKey,
+          builder: (context, state, child) {
+            return MainShellScreen(child: child);
+          },
         routes: [
           // Candidate Routes
           GoRoute(
@@ -99,37 +104,37 @@ class AppRouter {
       GoRoute(
         path: '/splash',
         name: 'splash',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
         path: '/onboarding',
         name: 'onboarding',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
         path: '/login',
         name: 'login',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: '/register',
         name: 'register',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
         path: '/register-employer',
         name: 'register_employer',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const RegisterEmployerScreen(),
       ),
       GoRoute(
         path: '/jobs/:slug',
         name: 'job_detail',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final slug = state.pathParameters['slug'] ?? '';
           return JobDetailScreen(slug: slug);
@@ -138,7 +143,7 @@ class AppRouter {
       GoRoute(
         path: '/companies/:name',
         name: 'company_detail',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final name = state.pathParameters['name'] ?? '';
           return CompanyDetailScreen(companyName: Uri.decodeComponent(name));
@@ -147,13 +152,13 @@ class AppRouter {
       GoRoute(
         path: '/applications',
         name: 'applications',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const ApplicationsScreen(),
       ),
       GoRoute(
         path: '/applications/:id',
         name: 'application_detail',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
           return ApplicationDetailScreen(applicationId: id);
@@ -162,79 +167,79 @@ class AppRouter {
       GoRoute(
         path: '/notifications',
         name: 'notifications',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const NotificationsScreen(),
       ),
       GoRoute(
         path: '/edit-profile',
         name: 'edit_profile',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const EditProfileScreen(),
       ),
       GoRoute(
         path: '/profile/edit',
         name: 'profile_edit',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const EditProfileScreen(),
       ),
       GoRoute(
         path: '/profile/certifications',
         name: 'profile_certifications',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const CertificationsScreen(),
       ),
       GoRoute(
         path: '/profile/experiences/add',
         name: 'profile_add_experience',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const AddExperienceScreen(),
       ),
       GoRoute(
         path: '/profile/documents',
         name: 'profile_documents',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const DocumentsScreen(),
       ),
       GoRoute(
         path: '/experiences',
         name: 'experiences',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const ExperiencesScreen(),
       ),
       GoRoute(
         path: '/experiences/add',
         name: 'add_experience',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const AddExperienceScreen(),
       ),
       GoRoute(
         path: '/certifications',
         name: 'certifications',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const CertificationsScreen(),
       ),
       GoRoute(
         path: '/documents',
         name: 'documents',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const DocumentsScreen(),
       ),
       GoRoute(
         path: '/messages',
         name: 'messages',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const MessagesScreen(),
       ),
       GoRoute(
         path: '/saved-jobs',
         name: 'saved_jobs',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const SavedJobsScreen(),
       ),
       GoRoute(
         path: '/settings',
         name: 'settings',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const SettingsScreen(),
       ),
 
@@ -242,13 +247,13 @@ class AppRouter {
       GoRoute(
         path: '/employer/jobs/create',
         name: 'employer_job_create',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const CreateEditJobScreen(),
       ),
       GoRoute(
         path: '/employer/jobs/:id/edit',
         name: 'employer_job_edit',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final id = int.tryParse(state.pathParameters['id'] ?? '0');
           return CreateEditJobScreen(jobId: id);
@@ -257,7 +262,7 @@ class AppRouter {
       GoRoute(
         path: '/employer/applicants/:id',
         name: 'employer_applicant_detail',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
           return EmployerApplicantDetailScreen(applicationId: id);
@@ -266,7 +271,7 @@ class AppRouter {
       GoRoute(
         path: '/employer/pipeline',
         name: 'employer_pipeline',
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const RecruitmentPipelineScreen(),
       ),
     ],

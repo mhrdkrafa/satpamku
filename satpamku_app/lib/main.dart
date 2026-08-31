@@ -12,18 +12,20 @@ void main() {
   );
 }
 
-class SatpamkuApp extends StatelessWidget {
+class SatpamkuApp extends ConsumerWidget {
   const SatpamkuApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+
     return MaterialApp.router(
       title: 'Satpamku',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      routerConfig: AppRouter.router,
+      routerConfig: router,
     );
   }
 }
