@@ -50,8 +50,10 @@ class CandidateFullProfileModel {
   });
 
   factory CandidateFullProfileModel.fromJson(Map<String, dynamic> json) {
+    final candidateProfile = json['candidate_profile'] as Map<String, dynamic>? ?? {};
+    final userProfile = json['profile'] as Map<String, dynamic>? ?? {};
     final user = json['user'] as Map<String, dynamic>? ?? {};
-    final userProfile = user['profile'] as Map<String, dynamic>? ?? {};
+
     final expList = (json['experiences'] as List?)
             ?.map((e) => ExperienceModel.fromJson(e as Map<String, dynamic>))
             .toList() ??
@@ -65,27 +67,30 @@ class CandidateFullProfileModel {
             .toList() ??
         [];
 
+    final resolvedUserId = (json['user_id'] ?? candidateProfile['user_id'] ?? json['id'] ?? user['id'] ?? 0) as int;
+    final resolvedId = (candidateProfile['id'] ?? json['id'] ?? resolvedUserId) as int;
+
     return CandidateFullProfileModel(
-      id: json['id'] as int,
-      userId: json['user_id'] as int,
-      fullName: user['name'] as String? ?? '',
-      email: user['email'] as String? ?? '',
-      phone: user['phone'] as String?,
+      id: resolvedId,
+      userId: resolvedUserId,
+      fullName: json['name'] as String? ?? user['name'] as String? ?? '',
+      email: json['email'] as String? ?? user['email'] as String? ?? '',
+      phone: json['phone'] as String? ?? user['phone'] as String?,
       avatarUrl: userProfile['avatar_url'] as String?,
-      headline: json['headline'] as String?,
-      summary: json['summary'] as String?,
-      birthDate: userProfile['birth_date'] as String?,
+      headline: candidateProfile['headline'] as String? ?? json['headline'] as String?,
+      summary: candidateProfile['summary'] as String? ?? json['summary'] as String?,
+      birthDate: userProfile['date_of_birth'] as String? ?? userProfile['birth_date'] as String?,
       gender: userProfile['gender'] as String?,
-      heightCm: (json['height_cm'] as num?)?.toInt(),
-      weightKg: (json['weight_kg'] as num?)?.toInt(),
-      bloodType: json['blood_type'] as String?,
-      hasSimA: json['has_sim_a'] as bool? ?? false,
-      hasSimB1: json['has_sim_b1'] as bool? ?? false,
-      hasSimB2: json['has_sim_b2'] as bool? ?? false,
-      hasSimC: json['has_sim_c'] as bool? ?? false,
-      highestCertificateLevel: json['highest_certificate_level'] as String? ?? 'none',
-      profileCompletion: (json['profile_completion'] as num?)?.toInt() ?? 0,
-      isProfilePublic: json['is_profile_public'] as bool? ?? true,
+      heightCm: (candidateProfile['height_cm'] ?? json['height_cm'] as num?)?.toInt(),
+      weightKg: (candidateProfile['weight_kg'] ?? json['weight_kg'] as num?)?.toInt(),
+      bloodType: candidateProfile['blood_type'] as String? ?? json['blood_type'] as String?,
+      hasSimA: (candidateProfile['has_sim_a'] ?? json['has_sim_a'] as bool?) ?? false,
+      hasSimB1: (candidateProfile['has_sim_b1'] ?? json['has_sim_b1'] as bool?) ?? false,
+      hasSimB2: (candidateProfile['has_sim_b2'] ?? json['has_sim_b2'] as bool?) ?? false,
+      hasSimC: (candidateProfile['has_sim_c'] ?? json['has_sim_c'] as bool?) ?? false,
+      highestCertificateLevel: candidateProfile['highest_certificate_level'] as String? ?? json['highest_certificate_level'] as String? ?? 'none',
+      profileCompletion: ((candidateProfile['profile_completion'] ?? json['profile_completion']) as num?)?.toInt() ?? 0,
+      isProfilePublic: (candidateProfile['is_profile_public'] ?? json['is_profile_public'] as bool?) ?? true,
       experiences: expList,
       certifications: certList,
       documents: docList,
@@ -114,7 +119,7 @@ class ExperienceModel {
 
   factory ExperienceModel.fromJson(Map<String, dynamic> json) {
     return ExperienceModel(
-      id: json['id'] as int,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       companyName: json['company_name'] as String? ?? json['employer_name'] as String? ?? '',
       positionTitle: json['position_title'] as String? ?? json['position'] as String? ?? '',
       startDate: json['start_date'] as String? ?? '',
@@ -148,13 +153,13 @@ class CertificationModel {
     final cert = json['certification'] as Map<String, dynamic>?;
 
     return CertificationModel(
-      id: json['id'] as int,
-      certificateName: cert?['name'] as String? ?? 'Sertifikat Satpam',
-      certificateLevel: cert?['level'] as String? ?? json['certificate_level'] as String? ?? 'gada_pratama',
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      certificateName: json['certification_name'] as String? ?? cert?['name'] as String? ?? json['name'] as String? ?? 'Sertifikat Satpam',
+      certificateLevel: json['level'] as String? ?? cert?['level'] as String? ?? json['certificate_level'] as String? ?? 'gada_pratama',
       certificateNumber: json['certificate_number'] as String?,
-      issueDate: json['issue_date'] as String?,
-      expiryDate: json['expiry_date'] as String?,
-      status: json['status'] as String? ?? 'pending',
+      issueDate: json['issued_at'] as String? ?? json['issue_date'] as String?,
+      expiryDate: json['expires_at'] as String? ?? json['expiry_date'] as String?,
+      status: json['verification_status'] as String? ?? json['status'] as String? ?? 'pending',
     );
   }
 }
@@ -176,10 +181,10 @@ class DocumentModel {
 
   factory DocumentModel.fromJson(Map<String, dynamic> json) {
     return DocumentModel(
-      id: json['id'] as int,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       type: json['type'] as String? ?? 'cv',
-      name: json['name'] as String? ?? 'Dokumen',
-      status: json['status'] as String? ?? 'pending',
+      name: json['title'] as String? ?? json['name'] as String? ?? 'Dokumen',
+      status: json['verification_status'] as String? ?? json['status'] as String? ?? 'pending',
       verifiedAt: json['verified_at'] as String?,
     );
   }
