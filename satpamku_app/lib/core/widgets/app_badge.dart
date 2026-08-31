@@ -18,7 +18,7 @@ class AppBadge extends StatelessWidget {
     this.isSmall = false,
   });
 
-  factory AppBadge.certificate(String level) {
+  factory AppBadge.certificate(String level, {bool isSmall = true}) {
     String label;
     AppBadgeVariant variant;
 
@@ -43,7 +43,7 @@ class AppBadge extends StatelessWidget {
         variant = AppBadgeVariant.neutral;
     }
 
-    return AppBadge(label: label, variant: variant, icon: Icons.verified_user_outlined);
+    return AppBadge(label: label, variant: variant, icon: Icons.verified_user_outlined, isSmall: isSmall);
   }
 
   factory AppBadge.urgent() {

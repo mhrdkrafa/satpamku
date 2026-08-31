@@ -185,7 +185,7 @@ class HomeScreen extends ConsumerWidget {
                 data: (urgentJobs) {
                   if (urgentJobs.isEmpty) return const SizedBox.shrink();
                   return SizedBox(
-                    height: 175,
+                    height: 245,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -194,7 +194,7 @@ class HomeScreen extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         final job = urgentJobs[index];
                         return SizedBox(
-                          width: 280,
+                          width: 300,
                           child: JobCard(
                             job: job,
                             onTap: () => context.push('/jobs/${job.slug}'),
