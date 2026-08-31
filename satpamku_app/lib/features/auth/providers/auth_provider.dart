@@ -18,6 +18,7 @@ class AuthState {
   });
 
   bool get isAuthenticated => user != null;
+  String? get error => errorMessage;
 
   AuthState copyWith({
     UserModel? user,
@@ -51,7 +52,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<bool> login({required String username, required String password}) async {
+  Future<bool> login(String username, String password) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final user = await _repository.login(username: username, password: password);
@@ -89,6 +90,32 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<bool> registerEmployer({
+    required String name,
+    required String companyName,
+    required String email,
+    required String phone,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      final user = await _repository.registerEmployer(
+        name: name,
+        companyName: companyName,
+        email: email,
+        phone: phone,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+      );
+      state = state.copyWith(user: user, isLoading: false);
+      return true;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      return false;
+    }
+  }
+
   Future<void> logout() async {
     await _repository.logout();
     state = const AuthState();
@@ -99,3 +126,5 @@ final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final repository = ref.watch(authRepositoryProvider);
   return AuthNotifier(repository);
 });
+
+final authProvider = authStateProvider;

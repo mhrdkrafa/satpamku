@@ -68,6 +68,39 @@ class AuthRepository {
     return user;
   }
 
+  Future<UserModel> registerEmployer({
+    required String name,
+    required String companyName,
+    required String email,
+    required String phone,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    final response = await _apiClient.post('/auth/register/employer', data: {
+      'name': name,
+      'company_name': companyName,
+      'email': email,
+      'phone': phone,
+      'password': password,
+      'password_confirmation': passwordConfirmation,
+    });
+
+    final data = response.data['data'] as Map<String, dynamic>;
+    final token = data['token'] as String;
+    final userJson = data['user'] as Map<String, dynamic>;
+    final user = UserModel.fromJson(userJson);
+
+    await _storageService.saveAuthToken(token);
+    await _storageService.saveUserSession(
+      userId: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    );
+
+    return user;
+  }
+
   Future<UserModel?> getCurrentUser() async {
     final hasToken = await _storageService.hasValidToken();
     if (!hasToken) return null;
