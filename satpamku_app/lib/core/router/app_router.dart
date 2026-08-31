@@ -32,26 +32,25 @@ import '../../features/profile/screens/profile_screen.dart';
 import '../../features/profile/screens/saved_jobs_screen.dart';
 import '../../features/profile/screens/settings_screen.dart';
 
+final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+final shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
+
 final routerProvider = Provider<GoRouter>((ref) {
-  return AppRouter.createRouter();
+  return AppRouter.router;
 });
 
 class AppRouter {
-  static GoRouter createRouter() {
-    final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root_${DateTime.now().microsecondsSinceEpoch}');
-    final shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell_${DateTime.now().microsecondsSinceEpoch}');
-
-    return GoRouter(
-      navigatorKey: rootNavigatorKey,
-      initialLocation: '/splash',
-      routes: [
-        ShellRoute(
-          navigatorKey: shellNavigatorKey,
-          builder: (context, state, child) {
-            return MainShellScreen(child: child);
-          },
+  static final GoRouter router = GoRouter(
+    navigatorKey: rootNavigatorKey,
+    initialLocation: '/splash',
+    routes: [
+      ShellRoute(
+        navigatorKey: shellNavigatorKey,
+        builder: (context, state, child) {
+          return MainShellScreen(child: child);
+        },
         routes: [
-          // Candidate Routes
+          // Candidate Shell Tabs
           GoRoute(
             path: '/',
             name: 'home',
@@ -78,7 +77,7 @@ class AppRouter {
             builder: (context, state) => const ProfileScreen(),
           ),
 
-          // Employer App Main Routes
+          // Employer Shell Tabs
           GoRoute(
             path: '/employer/dashboard',
             name: 'employer_dashboard',
@@ -101,6 +100,8 @@ class AppRouter {
           ),
         ],
       ),
+
+      // Root Fullscreen Routes (Cover bottom navbar)
       GoRoute(
         path: '/splash',
         name: 'splash',
@@ -148,12 +149,6 @@ class AppRouter {
           final name = state.pathParameters['name'] ?? '';
           return CompanyDetailScreen(companyName: Uri.decodeComponent(name));
         },
-      ),
-      GoRoute(
-        path: '/applications',
-        name: 'applications',
-        parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => const ApplicationsScreen(),
       ),
       GoRoute(
         path: '/applications/:id',
@@ -243,7 +238,7 @@ class AppRouter {
         builder: (context, state) => const SettingsScreen(),
       ),
 
-      // Employer App Secondary/Detail Routes
+      // Employer App Detail Routes
       GoRoute(
         path: '/employer/jobs/create',
         name: 'employer_job_create',
