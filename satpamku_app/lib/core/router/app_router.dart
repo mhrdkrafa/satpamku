@@ -55,9 +55,14 @@ class AppRouter {
             builder: (context, state) => const SearchScreen(),
           ),
           GoRoute(
-            path: '/notifications',
-            name: 'notifications',
-            builder: (context, state) => const NotificationsScreen(),
+            path: '/saved',
+            name: 'saved_jobs_tab',
+            builder: (context, state) => const SavedJobsScreen(),
+          ),
+          GoRoute(
+            path: '/applications',
+            name: 'applications_tab',
+            builder: (context, state) => const ApplicationsScreen(),
           ),
           GoRoute(
             path: '/profile',
@@ -239,10 +244,12 @@ class MainShellScreen extends ConsumerWidget {
     } else {
       if (location.startsWith('/jobs')) {
         selectedIndex = 1;
-      } else if (location.startsWith('/notifications')) {
+      } else if (location.startsWith('/saved')) {
         selectedIndex = 2;
-      } else if (location.startsWith('/profile')) {
+      } else if (location.startsWith('/applications')) {
         selectedIndex = 3;
+      } else if (location.startsWith('/profile')) {
+        selectedIndex = 4;
       } else {
         selectedIndex = 0;
       }
@@ -277,9 +284,12 @@ class MainShellScreen extends ConsumerWidget {
                 context.go('/jobs');
                 break;
               case 2:
-                context.go('/notifications');
+                context.go('/saved');
                 break;
               case 3:
+                context.go('/applications');
+                break;
+              case 4:
                 context.go('/profile');
                 break;
             }
@@ -311,23 +321,28 @@ class MainShellScreen extends ConsumerWidget {
             : const [
                 NavigationDestination(
                   icon: Icon(Icons.home_outlined),
-                  selectedIcon: Icon(Icons.home, color: AppColors.primary),
-                  label: 'Beranda',
+                  selectedIcon: Icon(Icons.home, color: Color(0xFF1B2A72)),
+                  label: 'Home',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.work_outline),
-                  selectedIcon: Icon(Icons.work, color: AppColors.primary),
-                  label: 'Lowongan',
+                  selectedIcon: Icon(Icons.work, color: Color(0xFF1B2A72)),
+                  label: 'Jobs',
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.notifications_none_outlined),
-                  selectedIcon: Icon(Icons.notifications, color: AppColors.primary),
-                  label: 'Notifikasi',
+                  icon: Icon(Icons.bookmark_outline),
+                  selectedIcon: Icon(Icons.bookmark, color: Color(0xFF1B2A72)),
+                  label: 'Saved',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.assignment_turned_in_outlined),
+                  selectedIcon: Icon(Icons.assignment_turned_in, color: Color(0xFF1B2A72)),
+                  label: 'Applied',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person, color: AppColors.primary),
-                  label: 'Akun',
+                  selectedIcon: Icon(Icons.person, color: Color(0xFF1B2A72)),
+                  label: 'Profile',
                 ),
               ],
       ),

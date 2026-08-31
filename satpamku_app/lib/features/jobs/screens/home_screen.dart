@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/app_avatar.dart';
-import '../../../core/widgets/app_badge.dart';
 import '../../../core/widgets/empty_state_widget.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/loading_skeleton.dart';
@@ -13,175 +12,218 @@ import '../providers/jobs_provider.dart';
 import '../widgets/job_card.dart';
 import '../widgets/urgent_job_card.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  String _selectedLocation = 'Jakarta Selatan';
+
+  @override
+  Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
     final user = authState.user;
 
-    final featuredAsync = ref.watch(featuredJobsProvider);
     final urgentAsync = ref.watch(urgentJobsProvider);
     final searchAsync = ref.watch(searchJobsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        titleSpacing: AppSpacing.lg,
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: AppColors.secondary,
-                borderRadius: AppSpacing.roundedSm,
-              ),
-              child: const Icon(Icons.shield, color: AppColors.primaryDark, size: 20),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            const Text(
-              'Satpamku',
-              style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 0.5),
-            ),
-          ],
+        backgroundColor: Colors.white,
+        elevation: 0,
+        titleSpacing: 16,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: AppAvatar(
+            name: user?.name ?? 'Ahmad',
+            imageUrl: user?.avatarUrl,
+            radius: 18,
+          ),
         ),
+        title: const Text(
+          'Satpamku',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1B2A72),
+            letterSpacing: -0.3,
+          ),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () => context.push('/jobs'),
+            icon: const Icon(Icons.notifications_none, color: Color(0xFF1B2A72), size: 24),
+            onPressed: () => context.push('/notifications'),
           ),
-          IconButton(
-            icon: const Icon(Icons.bookmark_outline),
-            onPressed: () => context.push('/saved-jobs'),
-          ),
+          const SizedBox(width: 8),
         ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          ref.invalidate(featuredJobsProvider);
           ref.invalidate(urgentJobsProvider);
           ref.invalidate(searchJobsProvider);
         },
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Candidate Header / Greeting
+              // Location Selector & Greeting
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: AppSpacing.roundedLg,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.2),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      AppAvatar(
-                        name: user?.name ?? 'Satpam',
-                        imageUrl: user?.avatarUrl,
-                        radius: 26,
-                        isVerified: true,
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              user != null ? 'Halo, ${user.name}' : 'Selamat Datang di Satpamku',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              user != null
-                                  ? 'Kualifikasi: ${user.highestCertificateLevel == null || user.highestCertificateLevel == 'none' ? 'Non-Sertifikat' : user.highestCertificateLevel!.toUpperCase()}'
-                                  : 'Portal Karir Satpam Indonesia',
-                              style: theme.textTheme.bodySmall?.copyWith(color: AppColors.secondaryLight),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // Categories Horizontal Pills
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: Text(
-                  'Sektor Penempatan',
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              SizedBox(
-                height: 40,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildCategoryPill(context, 'Semua Sektor', null),
-                    _buildCategoryPill(context, 'Perkantoran', 'Perkantoran'),
-                    _buildCategoryPill(context, 'Perbankan & Kas', 'Perbankan'),
-                    _buildCategoryPill(context, 'Mall & Retail', 'Retail'),
-                    _buildCategoryPill(context, 'Pabrik & Industri', 'Industri'),
-                    _buildCategoryPill(context, 'Residensial / Perumahan', 'Residensial'),
-                    _buildCategoryPill(context, 'VIP Bodyguard', 'VIP'),
+                    InkWell(
+                      onTap: _showLocationPicker,
+                      borderRadius: BorderRadius.circular(6),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF64748B)),
+                          const SizedBox(width: 4),
+                          Text(
+                            _selectedLocation,
+                            style: const TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF64748B),
+                            ),
+                          ),
+                          const Icon(Icons.keyboard_arrow_down, size: 16, color: Color(0xFF64748B)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Halo, ${user?.name ?? "Bpk. Ahmad"}.',
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1B2A72),
+                        letterSpacing: -0.4,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    const Text(
+                      'Siap bertugas hari ini?',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF64748B),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
 
-              const SizedBox(height: AppSpacing.xl),
-
-              // Urgent Hiring Section
+              // Search Bar with Filter Button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () => context.push('/jobs'),
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          height: 48,
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFE2E8F0)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.02),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.search, color: Color(0xFF94A3B8), size: 20),
+                              SizedBox(width: 10),
+                              Text(
+                                'Cari lowongan...',
+                                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    InkWell(
+                      onTap: () => context.push('/jobs'),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                        ),
+                        child: const Icon(Icons.tune, color: Color(0xFF1B2A72), size: 20),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Sector Categories (5 Circular/Rounded Square Items)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.bolt, color: AppColors.error, size: 20),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Urgent Hiring',
-                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    _buildSectorItem('Retail', Icons.storefront_outlined),
+                    _buildSectorItem('Residensial', Icons.holiday_village_outlined),
+                    _buildSectorItem('VIP', Icons.star_border),
+                    _buildSectorItem('Event', Icons.account_balance_outlined),
+                    _buildSectorItem('Industri', Icons.factory_outlined),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Urgent Hiring Section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Urgent Hiring',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1B2A72),
+                      ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        ref.read(jobFilterProvider.notifier).update((state) => state.copyWith(isUrgent: true));
-                        context.push('/jobs');
-                      },
-                      child: Text(
+                      onTap: () => context.push('/jobs'),
+                      child: const Text(
                         'Lihat Semua',
-                        style: theme.textTheme.labelSmall?.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1B2A72),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: 10),
               urgentAsync.when(
                 data: (urgentJobs) {
                   if (urgentJobs.isEmpty) return const SizedBox.shrink();
@@ -189,9 +231,9 @@ class HomeScreen extends ConsumerWidget {
                     height: 155,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       itemCount: urgentJobs.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
+                      separatorBuilder: (_, __) => const SizedBox(width: 12),
                       itemBuilder: (context, index) {
                         final job = urgentJobs[index];
                         return UrgentJobCard(
@@ -202,36 +244,43 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   );
                 },
-                loading: () => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                loading: () => const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: LoadingSkeleton.card(height: 140),
                 ),
                 error: (_, __) => const SizedBox.shrink(),
               ),
+              const SizedBox(height: 24),
 
-              const SizedBox(height: AppSpacing.xl),
-
-              // Lowongan Terbaru List
+              // Recommended for You Section
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Lowongan Satpam Terbaru',
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    const Text(
+                      'Recommended for You',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1B2A72),
+                      ),
                     ),
                     GestureDetector(
                       onTap: () => context.push('/jobs'),
-                      child: Text(
-                        'Eksplorasi',
-                        style: theme.textTheme.labelSmall?.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold),
+                      child: const Text(
+                        'Lihat Semua',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1B2A72),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: 12),
               searchAsync.when(
                 data: (jobs) {
                   if (jobs.isEmpty) {
@@ -243,9 +292,9 @@ class HomeScreen extends ConsumerWidget {
                   return ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     itemCount: jobs.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       final job = jobs[index];
                       return JobCard(
@@ -258,16 +307,90 @@ class HomeScreen extends ConsumerWidget {
                 loading: () => ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                  itemCount: 3,
-                  separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
-                  itemBuilder: (_, __) => LoadingSkeleton.card(height: 120),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: 2,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (_, __) => LoadingSkeleton.card(height: 140),
                 ),
                 error: (err, _) => ErrorStateWidget(
                   message: err.toString(),
                   onRetry: () => ref.invalidate(searchJobsProvider),
                 ),
               ),
+              const SizedBox(height: 20),
+
+              // Gada Pratama Training Banner
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF1B2A72), Color(0xFF0F172A)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF1B2A72).withOpacity(0.25),
+                        blurRadius: 14,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(Icons.workspace_premium, color: Color(0xFFFDE68A), size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'Gada Pratama Training',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Tingkatkan kualifikasi Anda. Daftar pelatihan sertifikasi dasar Satpam gelombang bulan ini.',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          color: Color(0xFFCBD5E1),
+                          height: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      ElevatedButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Pusat Pelatihan & Diklat Satpam POLDA Metro Jaya')),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFDE68A),
+                          foregroundColor: const Color(0xFF92400E),
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'Lihat Jadwal',
+                          style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -275,21 +398,72 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildCategoryPill(BuildContext context, String title, String? categorySlug) {
-    return Container(
-      margin: const EdgeInsets.only(right: AppSpacing.sm),
-      child: ActionChip(
-        label: Text(title),
-        backgroundColor: AppColors.lightSurface,
-        labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.lightTextPrimary),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppSpacing.roundedFull,
-          side: const BorderSide(color: AppColors.lightBorder),
-        ),
-        onPressed: () {
-          context.push('/jobs');
-        },
+  Widget _buildSectorItem(String title, IconData icon) {
+    return InkWell(
+      onTap: () => context.push('/jobs'),
+      borderRadius: BorderRadius.circular(12),
+      child: Column(
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F5F9),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+            ),
+            child: Icon(icon, size: 24, color: const Color(0xFF1B2A72)),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF475569),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  void _showLocationPicker() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Pilih Wilayah Penugasan',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1B2A72)),
+                ),
+                const SizedBox(height: 12),
+                ...['Jakarta Selatan', 'Jakarta Pusat', 'Jakarta Barat', 'Jakarta Utara', 'Jakarta Timur', 'Bekasi & Cikarang', 'Tangerang', 'Surabaya']
+                    .map(
+                      (loc) => ListTile(
+                        leading: const Icon(Icons.location_city, color: Color(0xFF1B2A72)),
+                        title: Text(loc, style: const TextStyle(fontWeight: FontWeight.w600)),
+                        trailing: _selectedLocation == loc ? const Icon(Icons.check, color: Color(0xFF1B2A72)) : null,
+                        onTap: () {
+                          setState(() => _selectedLocation = loc);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

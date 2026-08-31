@@ -69,8 +69,36 @@ class JobModel {
       isFeatured: json['is_featured'] as bool? ?? false,
       matchScore: (json['match_score'] as num?)?.toInt(),
       matchReasons: reasonsList,
-      publishedAt: json['published_at'] != null ? DateTime.tryParse(json['published_at']) : null,
+      publishedAt: json['published_at'] != null ? DateTime.tryParse(json['published_at'].toString()) : null,
     );
+  }
+
+  String get employmentType {
+    switch (shiftType) {
+      case 'part_time':
+        return 'Part-time';
+      case 'event':
+      case 'temporary':
+        return 'Contract';
+      default:
+        return 'Full-time';
+    }
+  }
+
+  String get postedTimeAgo {
+    if (publishedAt == null) return '';
+    final diff = DateTime.now().difference(publishedAt!);
+    if (diff.inDays > 30) {
+      return '${(diff.inDays / 30).floor()} bulan lalu';
+    } else if (diff.inDays > 0) {
+      return '${diff.inDays} hari lalu';
+    } else if (diff.inHours > 0) {
+      return '${diff.inHours} jam lalu';
+    } else if (diff.inMinutes > 0) {
+      return '${diff.inMinutes} menit lalu';
+    } else {
+      return 'baru saja';
+    }
   }
 
   String get formattedSalary {
@@ -158,6 +186,24 @@ class JobDetailModel extends JobModel {
     this.skills = const [],
     this.certifications = const [],
   });
+
+  List<String> get responsibilitiesList {
+    if (responsibilities == null || responsibilities!.trim().isEmpty) return [];
+    return responsibilities!
+        .split('\n')
+        .map((s) => s.replaceAll(RegExp(r'^[\s\-•*]+'), '').trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+  }
+
+  List<String> get requirementsList {
+    if (requirements == null || requirements!.trim().isEmpty) return [];
+    return requirements!
+        .split('\n')
+        .map((s) => s.replaceAll(RegExp(r'^[\s\-•*]+'), '').trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+  }
 
   factory JobDetailModel.fromJson(Map<String, dynamic> json) {
     final base = JobModel.fromJson(json);
