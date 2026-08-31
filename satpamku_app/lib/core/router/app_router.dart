@@ -308,24 +308,24 @@ class MainShellScreen extends ConsumerWidget {
         destinations: isEmployer
             ? const [
                 NavigationDestination(
-                  icon: Icon(Icons.dashboard_outlined),
-                  selectedIcon: Icon(Icons.dashboard, color: AppColors.primary),
-                  label: 'Dashboard',
+                  icon: Icon(Icons.home_outlined),
+                  selectedIcon: Icon(Icons.home, color: Color(0xFF1B2A72)),
+                  label: 'Home',
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.assignment_outlined),
-                  selectedIcon: Icon(Icons.assignment, color: AppColors.primary),
-                  label: 'Lowongan',
+                  icon: Icon(Icons.work_outline),
+                  selectedIcon: Icon(Icons.work, color: Color(0xFF1B2A72)),
+                  label: 'Jobs',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.people_outline),
-                  selectedIcon: Icon(Icons.people, color: AppColors.primary),
-                  label: 'Pelamar',
+                  selectedIcon: Icon(Icons.people, color: Color(0xFF1B2A72)),
+                  label: 'Candidates',
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.business_outlined),
-                  selectedIcon: Icon(Icons.business, color: AppColors.primary),
-                  label: 'Profil BUJP',
+                  icon: Icon(Icons.person_outline),
+                  selectedIcon: Icon(Icons.person, color: Color(0xFF1B2A72)),
+                  label: 'Profile',
                 ),
               ]
             : const [
