@@ -32,8 +32,7 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet> {
     ref.read(jobFilterProvider.notifier).update((state) => state.copyWith(
           shiftType: _selectedShift,
           certificateLevel: _selectedCertifications.isNotEmpty ? _selectedCertifications.first : null,
-          minSalary: (_salaryRange.start * 1000000).toInt(),
-          maxSalary: (_salaryRange.end * 1000000).toInt(),
+          salaryMin: (_salaryRange.start * 1000000).toInt(),
         ));
     Navigator.pop(context);
   }

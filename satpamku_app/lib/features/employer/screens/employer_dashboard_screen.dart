@@ -7,7 +7,7 @@ import '../../../core/widgets/empty_state_widget.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/loading_skeleton.dart';
 import '../../auth/providers/auth_provider.dart';
-import '../models/employer_models.dart';
+import '../models/employer_dashboard_model.dart';
 import '../providers/employer_provider.dart';
 
 class EmployerDashboardScreen extends ConsumerWidget {

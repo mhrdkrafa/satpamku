@@ -244,8 +244,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   );
                 },
-                loading: () => const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                loading: () => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: LoadingSkeleton.card(height: 140),
                 ),
                 error: (_, __) => const SizedBox.shrink(),

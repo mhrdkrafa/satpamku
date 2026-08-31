@@ -6,7 +6,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/empty_state_widget.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/loading_skeleton.dart';
-import '../models/employer_models.dart';
+import '../models/employer_applicant_model.dart';
 import '../providers/employer_provider.dart';
 
 class EmployerApplicantsScreen extends ConsumerStatefulWidget {

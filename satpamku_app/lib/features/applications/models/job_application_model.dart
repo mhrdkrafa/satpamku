@@ -34,6 +34,13 @@ class JobApplicationModel {
     );
   }
 
+  String get jobTitle => job.title;
+  String get companyName => job.companyName;
+  String get jobSlug => job.slug;
+  String get locationName => job.locationName;
+  String get salaryRange => job.formattedSalary;
+  String get shiftType => job.shiftType;
+
   String get statusDisplay {
     switch (status) {
       case 'submitted':

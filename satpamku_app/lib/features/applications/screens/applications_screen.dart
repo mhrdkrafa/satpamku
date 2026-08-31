@@ -8,7 +8,7 @@ import '../../../core/widgets/empty_state_widget.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/loading_skeleton.dart';
 import '../../auth/providers/auth_provider.dart';
-import '../models/application_model.dart';
+import '../models/job_application_model.dart';
 import '../providers/applications_provider.dart';
 
 class ApplicationsScreen extends ConsumerStatefulWidget {

@@ -34,6 +34,8 @@ class EmployerDashboardModel {
       recentApplicants: recentList,
     );
   }
+
+  int get pendingInterviews => interviewsScheduled;
 }
 
 class RecentApplicantModel {
