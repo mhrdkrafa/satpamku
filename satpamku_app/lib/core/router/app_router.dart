@@ -21,6 +21,7 @@ import '../../features/jobs/screens/company_detail_screen.dart';
 import '../../features/jobs/screens/home_screen.dart';
 import '../../features/jobs/screens/job_detail_screen.dart';
 import '../../features/jobs/screens/search_screen.dart';
+import '../../features/messages/screens/messages_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
 import '../../features/profile/screens/add_experience_screen.dart';
 import '../../features/profile/screens/certifications_screen.dart';
@@ -187,6 +188,12 @@ class AppRouter {
         name: 'documents',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const DocumentsScreen(),
+      ),
+      GoRoute(
+        path: '/messages',
+        name: 'messages',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const MessagesScreen(),
       ),
       GoRoute(
         path: '/saved-jobs',
