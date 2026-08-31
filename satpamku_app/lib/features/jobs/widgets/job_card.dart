@@ -110,14 +110,20 @@ class JobCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                job.formattedSalary,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Text(
+                  job.formattedSalary,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: AppSpacing.xs),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     'Lihat Detail',

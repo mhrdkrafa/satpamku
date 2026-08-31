@@ -11,6 +11,7 @@ import '../../../core/widgets/loading_skeleton.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../providers/jobs_provider.dart';
 import '../widgets/job_card.dart';
+import '../widgets/urgent_job_card.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -185,7 +186,7 @@ class HomeScreen extends ConsumerWidget {
                 data: (urgentJobs) {
                   if (urgentJobs.isEmpty) return const SizedBox.shrink();
                   return SizedBox(
-                    height: 245,
+                    height: 155,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -193,12 +194,9 @@ class HomeScreen extends ConsumerWidget {
                       separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
                       itemBuilder: (context, index) {
                         final job = urgentJobs[index];
-                        return SizedBox(
-                          width: 300,
-                          child: JobCard(
-                            job: job,
-                            onTap: () => context.push('/jobs/${job.slug}'),
-                          ),
+                        return UrgentJobCard(
+                          job: job,
+                          onTap: () => context.push('/jobs/${job.slug}'),
                         );
                       },
                     ),
