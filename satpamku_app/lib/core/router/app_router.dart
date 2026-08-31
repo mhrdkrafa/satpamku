@@ -16,6 +16,7 @@ import '../../features/employer/screens/employer_applicants_screen.dart';
 import '../../features/employer/screens/employer_dashboard_screen.dart';
 import '../../features/employer/screens/employer_jobs_screen.dart';
 import '../../features/employer/screens/employer_profile_screen.dart';
+import '../../features/employer/screens/recruitment_pipeline_screen.dart';
 import '../../features/jobs/screens/company_detail_screen.dart';
 import '../../features/jobs/screens/home_screen.dart';
 import '../../features/jobs/screens/job_detail_screen.dart';
@@ -224,6 +225,12 @@ class AppRouter {
           final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
           return EmployerApplicantDetailScreen(applicationId: id);
         },
+      ),
+      GoRoute(
+        path: '/employer/pipeline',
+        name: 'employer_pipeline',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const RecruitmentPipelineScreen(),
       ),
     ],
   );
