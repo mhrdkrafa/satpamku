@@ -11,6 +11,16 @@ class UpdateExperienceRequest extends FormRequest
         return $this->user() !== null && ($this->user()->isCandidate() || $this->user()->isAdmin());
     }
 
+    public function prepareForValidation(): void
+    {
+        if ($this->has('company_name') && !$this->has('employer_name')) {
+            $this->merge(['employer_name' => $this->input('company_name')]);
+        }
+        if ($this->has('position_title') && !$this->has('position')) {
+            $this->merge(['position' => $this->input('position_title')]);
+        }
+    }
+
     public function rules(): array
     {
         return [

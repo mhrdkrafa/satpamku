@@ -115,8 +115,8 @@ class ExperienceModel {
   factory ExperienceModel.fromJson(Map<String, dynamic> json) {
     return ExperienceModel(
       id: json['id'] as int,
-      companyName: json['company_name'] as String? ?? '',
-      positionTitle: json['position_title'] as String? ?? '',
+      companyName: json['company_name'] as String? ?? json['employer_name'] as String? ?? '',
+      positionTitle: json['position_title'] as String? ?? json['position'] as String? ?? '',
       startDate: json['start_date'] as String? ?? '',
       endDate: json['end_date'] as String?,
       isCurrent: json['is_current'] as bool? ?? false,

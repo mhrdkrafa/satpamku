@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/widgets/app_button.dart';
+import '../../../core/widgets/app_badge.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/empty_state_widget.dart';
 import '../../../core/widgets/error_state_widget.dart';
@@ -11,6 +12,15 @@ import '../providers/candidate_profile_provider.dart';
 
 class ExperiencesScreen extends ConsumerWidget {
   const ExperiencesScreen({super.key});
+
+  String _formatDate(String dateStr) {
+    try {
+      final parsed = DateTime.parse(dateStr);
+      return DateFormat('MMM yyyy', 'id_ID').format(parsed);
+    } catch (_) {
+      return dateStr;
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,7 +36,7 @@ class ExperiencesScreen extends ConsumerWidget {
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
-        label: const Text('Tambah Pengalaman'),
+        label: const Text('Tambah Pengalaman', style: TextStyle(fontWeight: FontWeight.bold)),
         onPressed: () => context.push('/experiences/add'),
       ),
       body: RefreshIndicator(
@@ -34,10 +44,18 @@ class ExperiencesScreen extends ConsumerWidget {
         child: profileAsync.when(
           data: (profile) {
             if (profile.experiences.isEmpty) {
-              return const EmptyStateWidget(
-                title: 'Belum Ada Pengalaman Kerja',
-                message: 'Tambahkan riwayat tugas dan penempatan keamanan Anda untuk meningkatkan peluang diterima.',
-                icon: Icons.work_history_outlined,
+              return LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    child: const EmptyStateWidget(
+                      title: 'Belum Ada Pengalaman Kerja',
+                      message: 'Tambahkan riwayat tugas dan penempatan keamanan Anda untuk meningkatkan peluang diterima.',
+                      icon: Icons.work_history_outlined,
+                    ),
+                  ),
+                ),
               );
             }
 
@@ -47,33 +65,79 @@ class ExperiencesScreen extends ConsumerWidget {
               separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
               itemBuilder: (context, index) {
                 final exp = profile.experiences[index];
+                final startFormatted = _formatDate(exp.startDate);
+                final endFormatted = exp.isCurrent ? 'Sekarang' : (exp.endDate != null ? _formatDate(exp.endDate!) : '-');
+
                 return AppCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.08),
+                              borderRadius: AppSpacing.roundedSm,
+                            ),
+                            child: const Icon(Icons.shield_outlined, color: AppColors.primary, size: 22),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
                           Expanded(
-                            child: Text(
-                              exp.positionTitle,
-                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  exp.positionTitle.isNotEmpty ? exp.positionTitle : 'Petugas Keamanan (Satpam)',
+                                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  exp.companyName.isNotEmpty ? exp.companyName : 'Perusahaan BUJP',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '$startFormatted – $endFormatted',
+                                      style: theme.textTheme.bodySmall?.copyWith(color: AppColors.lightTextMuted),
+                                    ),
+                                    if (exp.isCurrent) ...[
+                                      const SizedBox(width: 8),
+                                      const AppBadge(
+                                        label: 'Aktif Bertugas',
+                                        variant: AppBadgeVariant.success,
+                                        isSmall: true,
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete_outline, color: AppColors.error, size: 20),
+                            tooltip: 'Hapus Pengalaman',
                             onPressed: () async {
                               final confirm = await showDialog<bool>(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
                                   title: const Text('Hapus Pengalaman?'),
-                                  content: Text('Hapus riwayat kerja di ${exp.companyName}?'),
+                                  content: Text('Hapus riwayat tugas di ${exp.companyName}?'),
                                   actions: [
-                                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Batal')),
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(ctx, false),
+                                      child: const Text('Batal'),
+                                    ),
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
                                       onPressed: () => Navigator.pop(ctx, true),
-                                      child: const Text('Hapus'),
+                                      child: const Text('Hapus', style: TextStyle(color: Colors.white)),
                                     ),
                                   ],
                                 ),
@@ -87,18 +151,14 @@ class ExperiencesScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      Text(
-                        exp.companyName,
-                        style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.primary, fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${exp.startDate} s/d ${exp.isCurrent ? 'Sekarang' : (exp.endDate ?? '-')}',
-                        style: theme.textTheme.bodySmall?.copyWith(color: AppColors.lightTextMuted),
-                      ),
-                      if (exp.description != null && exp.description!.isNotEmpty) ...[
+                      if (exp.description != null && exp.description!.trim().isNotEmpty) ...[
                         const SizedBox(height: AppSpacing.sm),
-                        Text(exp.description!, style: theme.textTheme.bodySmall),
+                        const Divider(height: 1, color: AppColors.lightBorder),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          exp.description!,
+                          style: theme.textTheme.bodySmall?.copyWith(color: AppColors.lightTextSecondary),
+                        ),
                       ],
                     ],
                   ),

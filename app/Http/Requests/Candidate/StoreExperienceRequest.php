@@ -11,13 +11,23 @@ class StoreExperienceRequest extends FormRequest
         return $this->user() !== null && ($this->user()->isCandidate() || $this->user()->isAdmin());
     }
 
+    public function prepareForValidation(): void
+    {
+        if ($this->has('company_name') && !$this->has('employer_name')) {
+            $this->merge(['employer_name' => $this->input('company_name')]);
+        }
+        if ($this->has('position_title') && !$this->has('position')) {
+            $this->merge(['position' => $this->input('position_title')]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'employer_name' => ['required', 'string', 'max:255'],
             'position' => ['required', 'string', 'max:255'],
             'start_date' => ['required', 'date'],
-            'end_date' => ['nullable', 'date', 'after_or_equal:start_date', 'required_if:is_current,false'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'description' => ['nullable', 'string', 'max:1000'],
             'is_current' => ['boolean'],
         ];
