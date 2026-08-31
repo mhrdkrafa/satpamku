@@ -46,57 +46,85 @@ class AppRouter {
     routes: [
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) {
-          return MainShellScreen(child: child);
-        },
+        pageBuilder: (context, state, child) => MaterialPage(
+          key: const ValueKey('shell_page'),
+          child: MainShellScreen(child: child),
+        ),
         routes: [
           // Candidate Shell Tabs
           GoRoute(
             path: '/',
             name: 'home',
-            pageBuilder: (context, state) => const NoTransitionPage(child: HomeScreen()),
+            pageBuilder: (context, state) => const NoTransitionPage(
+              key: ValueKey('home_tab'),
+              child: HomeScreen(),
+            ),
           ),
           GoRoute(
             path: '/jobs',
             name: 'jobs',
-            pageBuilder: (context, state) => const NoTransitionPage(child: SearchScreen()),
+            pageBuilder: (context, state) => const NoTransitionPage(
+              key: ValueKey('jobs_tab'),
+              child: SearchScreen(),
+            ),
           ),
           GoRoute(
             path: '/saved',
             name: 'saved_jobs_tab',
-            pageBuilder: (context, state) => const NoTransitionPage(child: SavedJobsScreen()),
+            pageBuilder: (context, state) => const NoTransitionPage(
+              key: ValueKey('saved_tab'),
+              child: SavedJobsScreen(),
+            ),
           ),
           GoRoute(
             path: '/applications',
             name: 'applications_tab',
-            pageBuilder: (context, state) => const NoTransitionPage(child: ApplicationsScreen()),
+            pageBuilder: (context, state) => const NoTransitionPage(
+              key: ValueKey('applications_tab'),
+              child: ApplicationsScreen(),
+            ),
           ),
           GoRoute(
             path: '/profile',
             name: 'profile',
-            pageBuilder: (context, state) => const NoTransitionPage(child: ProfileScreen()),
+            pageBuilder: (context, state) => const NoTransitionPage(
+              key: ValueKey('profile_tab'),
+              child: ProfileScreen(),
+            ),
           ),
 
           // Employer Shell Tabs
           GoRoute(
             path: '/employer/dashboard',
             name: 'employer_dashboard',
-            pageBuilder: (context, state) => const NoTransitionPage(child: EmployerDashboardScreen()),
+            pageBuilder: (context, state) => const NoTransitionPage(
+              key: ValueKey('employer_dashboard_tab'),
+              child: EmployerDashboardScreen(),
+            ),
           ),
           GoRoute(
             path: '/employer/jobs',
             name: 'employer_jobs',
-            pageBuilder: (context, state) => const NoTransitionPage(child: EmployerJobsScreen()),
+            pageBuilder: (context, state) => const NoTransitionPage(
+              key: ValueKey('employer_jobs_tab'),
+              child: EmployerJobsScreen(),
+            ),
           ),
           GoRoute(
             path: '/employer/applicants',
             name: 'employer_applicants',
-            pageBuilder: (context, state) => const NoTransitionPage(child: EmployerApplicantsScreen()),
+            pageBuilder: (context, state) => const NoTransitionPage(
+              key: ValueKey('employer_applicants_tab'),
+              child: EmployerApplicantsScreen(),
+            ),
           ),
           GoRoute(
             path: '/employer/profile',
             name: 'employer_profile',
-            pageBuilder: (context, state) => const NoTransitionPage(child: EmployerProfileScreen()),
+            pageBuilder: (context, state) => const NoTransitionPage(
+              key: ValueKey('employer_profile_tab'),
+              child: EmployerProfileScreen(),
+            ),
           ),
         ],
       ),
@@ -105,144 +133,219 @@ class AppRouter {
       GoRoute(
         path: '/splash',
         name: 'splash',
-        builder: (context, state) => const SplashScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('splash_screen'),
+          child: const SplashScreen(),
+        ),
       ),
       GoRoute(
         path: '/onboarding',
         name: 'onboarding',
-        builder: (context, state) => const OnboardingScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('onboarding_screen'),
+          child: const OnboardingScreen(),
+        ),
       ),
       GoRoute(
         path: '/login',
         name: 'login',
-        builder: (context, state) => const LoginScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('login_screen'),
+          child: const LoginScreen(),
+        ),
       ),
       GoRoute(
         path: '/register',
         name: 'register',
-        builder: (context, state) => const RegisterScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('register_screen'),
+          child: const RegisterScreen(),
+        ),
       ),
       GoRoute(
         path: '/register-employer',
         name: 'register_employer',
-        builder: (context, state) => const RegisterEmployerScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('register_employer_screen'),
+          child: const RegisterEmployerScreen(),
+        ),
       ),
       GoRoute(
         path: '/jobs/:slug',
         name: 'job_detail',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final slug = state.pathParameters['slug'] ?? '';
-          return JobDetailScreen(slug: slug);
+          return MaterialPage(
+            key: ValueKey('job_detail_$slug'),
+            child: JobDetailScreen(slug: slug),
+          );
         },
       ),
       GoRoute(
         path: '/companies/:name',
         name: 'company_detail',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final name = state.pathParameters['name'] ?? '';
-          return CompanyDetailScreen(companyName: Uri.decodeComponent(name));
+          return MaterialPage(
+            key: ValueKey('company_detail_$name'),
+            child: CompanyDetailScreen(companyName: Uri.decodeComponent(name)),
+          );
         },
       ),
       GoRoute(
         path: '/applications/:id',
         name: 'application_detail',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
-          return ApplicationDetailScreen(applicationId: id);
+          return MaterialPage(
+            key: ValueKey('application_detail_$id'),
+            child: ApplicationDetailScreen(applicationId: id),
+          );
         },
       ),
       GoRoute(
         path: '/notifications',
         name: 'notifications',
-        builder: (context, state) => const NotificationsScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('notifications_screen'),
+          child: const NotificationsScreen(),
+        ),
       ),
       GoRoute(
         path: '/edit-profile',
         name: 'edit_profile',
-        builder: (context, state) => const EditProfileScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('edit_profile_screen'),
+          child: const EditProfileScreen(),
+        ),
       ),
       GoRoute(
         path: '/profile/edit',
         name: 'profile_edit',
-        builder: (context, state) => const EditProfileScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('profile_edit_screen'),
+          child: const EditProfileScreen(),
+        ),
       ),
       GoRoute(
         path: '/profile/certifications',
         name: 'profile_certifications',
-        builder: (context, state) => const CertificationsScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('profile_certifications_screen'),
+          child: const CertificationsScreen(),
+        ),
       ),
       GoRoute(
         path: '/profile/experiences/add',
         name: 'profile_add_experience',
-        builder: (context, state) => const AddExperienceScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('profile_add_experience_screen'),
+          child: const AddExperienceScreen(),
+        ),
       ),
       GoRoute(
         path: '/profile/documents',
         name: 'profile_documents',
-        builder: (context, state) => const DocumentsScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('profile_documents_screen'),
+          child: const DocumentsScreen(),
+        ),
       ),
       GoRoute(
         path: '/experiences',
         name: 'experiences',
-        builder: (context, state) => const ExperiencesScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('experiences_screen'),
+          child: const ExperiencesScreen(),
+        ),
       ),
       GoRoute(
         path: '/experiences/add',
         name: 'add_experience',
-        builder: (context, state) => const AddExperienceScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('experiences_add_screen'),
+          child: const AddExperienceScreen(),
+        ),
       ),
       GoRoute(
         path: '/certifications',
         name: 'certifications',
-        builder: (context, state) => const CertificationsScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('certifications_screen'),
+          child: const CertificationsScreen(),
+        ),
       ),
       GoRoute(
         path: '/documents',
         name: 'documents',
-        builder: (context, state) => const DocumentsScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('documents_screen'),
+          child: const DocumentsScreen(),
+        ),
       ),
       GoRoute(
         path: '/messages',
         name: 'messages',
-        builder: (context, state) => const MessagesScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('messages_screen'),
+          child: const MessagesScreen(),
+        ),
       ),
       GoRoute(
         path: '/saved-jobs',
         name: 'saved_jobs',
-        builder: (context, state) => const SavedJobsScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('saved_jobs_screen'),
+          child: const SavedJobsScreen(),
+        ),
       ),
       GoRoute(
         path: '/settings',
         name: 'settings',
-        builder: (context, state) => const SettingsScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('settings_screen'),
+          child: const SettingsScreen(),
+        ),
       ),
 
       // Employer App Detail Routes
       GoRoute(
         path: '/employer/jobs/create',
         name: 'employer_job_create',
-        builder: (context, state) => const CreateEditJobScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('employer_job_create_screen'),
+          child: const CreateEditJobScreen(),
+        ),
       ),
       GoRoute(
         path: '/employer/jobs/:id/edit',
         name: 'employer_job_edit',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final id = int.tryParse(state.pathParameters['id'] ?? '0');
-          return CreateEditJobScreen(jobId: id);
+          return MaterialPage(
+            key: ValueKey('employer_job_edit_$id'),
+            child: CreateEditJobScreen(jobId: id),
+          );
         },
       ),
       GoRoute(
         path: '/employer/applicants/:id',
         name: 'employer_applicant_detail',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final id = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
-          return EmployerApplicantDetailScreen(applicationId: id);
+          return MaterialPage(
+            key: ValueKey('employer_applicant_detail_$id'),
+            child: EmployerApplicantDetailScreen(applicationId: id),
+          );
         },
       ),
       GoRoute(
         path: '/employer/pipeline',
         name: 'employer_pipeline',
-        builder: (context, state) => const RecruitmentPipelineScreen(),
+        pageBuilder: (context, state) => MaterialPage(
+          key: const ValueKey('employer_pipeline_screen'),
+          child: const RecruitmentPipelineScreen(),
+        ),
       ),
     ],
   );
@@ -257,7 +360,7 @@ class MainShellScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateProvider).user;
     final isEmployer = user?.role == 'employer';
-    final String location = GoRouterState.of(context).uri.path;
+    final String location = GoRouter.maybeOf(context)?.routeInformationProvider.value.uri.path ?? '/';
 
     int selectedIndex = 0;
     if (isEmployer) {
