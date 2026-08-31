@@ -129,7 +129,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   children: [
                     Expanded(
                       child: InkWell(
-                        onTap: () => context.push('/jobs'),
+                        onTap: () => context.go('/jobs'),
                         borderRadius: BorderRadius.circular(12),
                         child: Container(
                           height: 48,
@@ -161,7 +161,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                     const SizedBox(width: 10),
                     InkWell(
-                      onTap: () => context.push('/jobs'),
+                      onTap: () => context.go('/jobs'),
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         width: 48,
@@ -210,7 +210,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => context.push('/jobs'),
+                      onTap: () => context.go('/jobs'),
                       child: const Text(
                         'Lihat Semua',
                         style: TextStyle(
@@ -267,7 +267,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => context.push('/jobs'),
+                      onTap: () => context.go('/jobs'),
                       child: const Text(
                         'Lihat Semua',
                         style: TextStyle(
@@ -400,7 +400,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildSectorItem(String title, IconData icon) {
     return InkWell(
-      onTap: () => context.push('/jobs'),
+      onTap: () => context.go('/jobs'),
       borderRadius: BorderRadius.circular(12),
       child: Column(
         children: [

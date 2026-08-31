@@ -206,7 +206,7 @@ class CompanyDetailScreen extends ConsumerWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => context.push('/jobs'),
+                  onTap: () => context.go('/jobs'),
                   child: const Text(
                     'View All',
                     style: TextStyle(

@@ -86,7 +86,7 @@ class NotificationsScreen extends ConsumerWidget {
                 body: 'PT. Garuda Security has scheduled an interview for the Chief Security Officer position.',
                 time: '10:30 AM • Action Required',
                 isUnread: true,
-                onTap: () => context.push('/applications'),
+                onTap: () => context.go('/applications'),
               ),
               const SizedBox(height: 12),
 
@@ -99,7 +99,7 @@ class NotificationsScreen extends ConsumerWidget {
                 body: 'Your application for Night Guard at Mall Kelapa Gading was reviewed.',
                 time: '08:15 AM',
                 isUnread: true,
-                onTap: () => context.push('/applications'),
+                onTap: () => context.go('/applications'),
               ),
               const SizedBox(height: 20),
 
@@ -119,8 +119,8 @@ class NotificationsScreen extends ConsumerWidget {
                 body: '3 new jobs match your preference for Corporate Security in Jakarta Selatan.',
                 time: 'Yesterday, 14:20 PM',
                 actionButtonText: 'View Jobs',
-                onActionTap: () => context.push('/jobs'),
-                onTap: () => context.push('/jobs'),
+                onActionTap: () => context.go('/jobs'),
+                onTap: () => context.go('/jobs'),
               ),
               const SizedBox(height: 12),
 
@@ -132,7 +132,7 @@ class NotificationsScreen extends ConsumerWidget {
                 title: 'Profile Verification Complete',
                 body: 'Your Gada Pratama certificate has been verified. You now have the verified badge on your profile.',
                 time: 'Yesterday, 09:00 AM',
-                onTap: () => context.push('/profile'),
+                onTap: () => context.go('/profile'),
               ),
               const SizedBox(height: 30),
             ],
