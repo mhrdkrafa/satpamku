@@ -8,6 +8,8 @@ import '../../features/auth/providers/auth_provider.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
+import '../../features/auth/screens/register_employer_screen.dart';
+import '../../features/auth/screens/splash_screen.dart';
 import '../../features/employer/screens/create_edit_job_screen.dart';
 import '../../features/employer/screens/employer_applicant_detail_screen.dart';
 import '../../features/employer/screens/employer_applicants_screen.dart';
@@ -33,7 +35,7 @@ final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(d
 class AppRouter {
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: '/',
+    initialLocation: '/splash',
     routes: [
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
@@ -87,6 +89,12 @@ class AppRouter {
         ],
       ),
       GoRoute(
+        path: '/splash',
+        name: 'splash',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
         path: '/onboarding',
         name: 'onboarding',
         parentNavigatorKey: _rootNavigatorKey,
@@ -103,6 +111,12 @@ class AppRouter {
         name: 'register',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/register-employer',
+        name: 'register_employer',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const RegisterEmployerScreen(),
       ),
       GoRoute(
         path: '/jobs/:slug',

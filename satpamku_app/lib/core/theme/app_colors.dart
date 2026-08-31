@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Brand Colors — Deep Navy & Brass Gold
-  static const Color primary = Color(0xFF0A192F);
-  static const Color primaryLight = Color(0xFF1E3A5F);
-  static const Color primaryDark = Color(0xFF050D1A);
+  // Brand Colors — Stitch Navy & Brass Gold
+  static const Color primary = Color(0xFF1B2A72);
+  static const Color primaryLight = Color(0xFF2B3D96);
+  static const Color primaryDark = Color(0xFF101B4B);
   
-  static const Color secondary = Color(0xFFD4AF37);
-  static const Color secondaryLight = Color(0xFFF4E5A1);
-  static const Color secondaryDark = Color(0xFF997D1E);
+  static const Color secondary = Color(0xFFC69214);
+  static const Color secondaryLight = Color(0xFFFDE68A);
+  static const Color secondaryDark = Color(0xFF92400E);
 
   // Status & Feedback Colors
   static const Color success = Color(0xFF10B981);
