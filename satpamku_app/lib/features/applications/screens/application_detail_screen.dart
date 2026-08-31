@@ -4,12 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/widgets/app_avatar.dart';
-import '../../../core/widgets/app_badge.dart';
-import '../../../core/widgets/app_button.dart';
-import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/loading_skeleton.dart';
+import '../models/application_model.dart';
 import '../providers/applications_provider.dart';
 
 class ApplicationDetailScreen extends ConsumerStatefulWidget {
@@ -28,16 +25,20 @@ class _ApplicationDetailScreenState extends ConsumerState<ApplicationDetailScree
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: const RoundedRectangleBorder(borderRadius: AppSpacing.roundedLg),
-        title: const Text('Batalkan Lamaran?'),
-        content: const Text('Apakah Anda yakin ingin membatalkan berkas lamaran pekerjaan ini? Tindakan ini tidak dapat dibatalkan.'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Batalkan Lamaran?', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1B2A72))),
+        content: const Text('Apakah Anda yakin ingin membatalkan berkas lamaran pekerjaan ini?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Kembali'),
+            child: const Text('Kembali', style: TextStyle(color: Color(0xFF64748B))),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFEF4444),
+              foregroundColor: Colors.white,
+              elevation: 0,
+            ),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Batalkan Lamaran'),
           ),
@@ -62,7 +63,7 @@ class _ApplicationDetailScreenState extends ConsumerState<ApplicationDetailScree
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()), backgroundColor: AppColors.error),
+          SnackBar(content: Text(e.toString()), backgroundColor: const Color(0xFFEF4444)),
         );
       }
     } finally {
@@ -72,165 +73,369 @@ class _ApplicationDetailScreenState extends ConsumerState<ApplicationDetailScree
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final appAsync = ref.watch(applicationDetailProvider(widget.applicationId));
-    final dateFormat = DateFormat('dd MMMM yyyy, HH:mm');
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Status Lamaran'),
+        backgroundColor: Colors.white,
+        elevation: 0.5,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF1B2A72)),
+          onPressed: () => context.pop(),
+        ),
+        title: const Text(
+          'Application Details',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1B2A72),
+          ),
+        ),
+        centerTitle: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: Color(0xFF1B2A72)),
+            onPressed: () {},
+          ),
+          const SizedBox(width: 4),
+        ],
+      ),
+      bottomNavigationBar: appAsync.whenOrNull(
+        data: (app) => Container(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+          ),
+          child: SafeArea(
+            child: Row(
+              children: [
+                if (app.canWithdraw) ...[
+                  Expanded(
+                    child: SizedBox(
+                      height: 48,
+                      child: OutlinedButton(
+                        onPressed: _isWithdrawing ? null : () => _withdraw(context),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Color(0xFF1B2A72)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          'Withdraw Application',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1B2A72),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: SizedBox(
+                    height: 48,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Membuka panduan & tips wawancara Satpam.')),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1B2A72),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        'Prepare for Interview',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
       body: appAsync.when(
         data: (app) => SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Status Hero Card
-              AppCard(
-                backgroundColor: _getStatusBgColor(app.status),
-                borderColor: _getStatusBorderColor(app.status),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Status Lamaran:',
-                          style: theme.textTheme.labelMedium?.copyWith(color: AppColors.lightTextSecondary),
-                        ),
-                        AppBadge.status(app.status),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      app.statusDisplay,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: _getStatusTextColor(app.status),
+              // Top Job Details Card with Gold Border
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: Color(0xFFC69214), width: 4),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      _getStatusDescription(app.status),
-                      style: theme.textTheme.bodySmall?.copyWith(color: AppColors.lightTextSecondary),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F5F9),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                              ),
+                              child: const Center(
+                                child: Icon(Icons.shield_outlined, color: Color(0xFF1B2A72), size: 24),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    app.jobTitle,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF1B2A72),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          app.companyName,
+                                          style: const TextStyle(fontSize: 12.5, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      const Icon(Icons.verified, size: 14, color: Color(0xFFC69214)),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            _buildChip(Icons.location_on_outlined, 'Jakarta Pusat'),
+                            _buildChip(Icons.payments_outlined, 'IDR 5.5M - 7M'),
+                            _buildChip(Icons.work_outline, 'Full-Time'),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Applied on ${DateFormat('dd MMM yyyy').format(app.appliedAt)}',
+                              style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                if (app.jobSlug != null) context.push('/jobs/${app.jobSlug}');
+                              },
+                              child: const Text(
+                                'View Job Post',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF1B2A72),
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
+              const SizedBox(height: 14),
 
-              const SizedBox(height: AppSpacing.lg),
-
-              // Interview Invitation (If scheduled)
-              if (app.interviewAt != null) ...[
-                AppCard(
-                  backgroundColor: AppColors.warningLight,
-                  borderColor: AppColors.warning,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+              // Status Highlight Banner
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEEF2FF),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFC7D2FE)),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1B2A72),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.calendar_month, color: Colors.white, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.event_available, color: AppColors.warning, size: 22),
-                          const SizedBox(width: AppSpacing.sm),
                           Text(
-                            'Jadwal Undangan Interview',
-                            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: const Color(0xFFB45309)),
+                            'Interview Scheduled',
+                            style: TextStyle(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1B2A72),
+                            ),
+                          ),
+                          SizedBox(height: 3),
+                          Text(
+                            'Your next step is an on-site interview with the regional security manager.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF4338CA),
+                              height: 1.35,
+                            ),
                           ),
                         ],
                       ),
-                      const Divider(height: AppSpacing.md),
-                      Text('Waktu: ${dateFormat.format(app.interviewAt!)} WIB', style: const TextStyle(fontWeight: FontWeight.bold)),
-                      if (app.interviewLocation != null) ...[
-                        const SizedBox(height: 4),
-                        Text('Lokasi: ${app.interviewLocation}'),
-                      ],
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-              ],
-
-              // Job Info Card
-              AppCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        AppAvatar(
-                          name: app.job.companyName,
-                          imageUrl: app.job.companyLogoUrl,
-                          radius: 24,
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(app.job.title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                              Text(app.job.companyName, style: theme.textTheme.bodySmall?.copyWith(color: AppColors.lightTextSecondary)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Divider(height: AppSpacing.lg),
-                    Text('Gaji yang Ditawarkan: ${app.job.formattedSalary}'),
-                    const SizedBox(height: 4),
-                    Text('Lokasi Penempatan: ${app.job.locationName}'),
-                    const SizedBox(height: 4),
-                    Text('Tipe Shift: ${app.job.formattedShift}'),
-                    const SizedBox(height: AppSpacing.md),
-                    AppButton(
-                      text: 'Lihat Info Lowongan Lengkap',
-                      variant: AppButtonVariant.outline,
-                      height: 40,
-                      onPressed: () => context.push('/jobs/${app.job.slug}'),
                     ),
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
 
-              const SizedBox(height: AppSpacing.lg),
-
-              // Candidate Submission Cover Letter
-              if (app.coverLetter != null && app.coverLetter!.isNotEmpty) ...[
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Catatan Pengantar Anda', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                      const Divider(height: AppSpacing.md),
-                      Text(app.coverLetter!, style: theme.textTheme.bodyMedium),
-                    ],
-                  ),
+              // Application Timeline Stepper
+              const Text(
+                'Application Timeline',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1B2A72),
                 ),
-                const SizedBox(height: AppSpacing.lg),
-              ],
+              ),
+              const SizedBox(height: 14),
+              _buildTimelineStep(
+                isDone: false,
+                isCurrent: true,
+                badge: 'Upcoming',
+                title: 'On-Site Interview',
+                date: 'Scheduled for 20 Oct 2023, 10:00 AM WIB.',
+                locationBox: 'PT. Garuda Shield HQ\nSudirman Central Business District (SCBD) Lot 9, Jakarta',
+              ),
+              _buildTimelineStep(
+                isDone: true,
+                isCurrent: false,
+                title: 'Application Reviewed',
+                date: '15 Oct 2023',
+                subtitle: 'Your application passed the initial screening process.',
+              ),
+              _buildTimelineStep(
+                isDone: true,
+                isCurrent: false,
+                isLast: true,
+                title: 'Application Submitted',
+                date: '12 Oct 2023',
+                subtitle: 'Resume and Gada Pratama certificate uploaded successfully.',
+              ),
+              const SizedBox(height: 16),
 
-              if (app.canWithdraw)
-                AppButton(
-                  text: 'Batalkan Lamaran',
-                  variant: AppButtonVariant.danger,
-                  isLoading: _isWithdrawing,
-                  onPressed: () => _withdraw(context),
+              // Recruiter Contact Box
+              const Text(
+                'Recruiter Contact',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1B2A72),
                 ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.person, color: Color(0xFF1B2A72), size: 24),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Budi Santoso',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'HR Manager',
+                            style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.chat_bubble_outline, color: Color(0xFF1B2A72), size: 20),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Menghubungkan ke chat rekruter...')),
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.mail_outline, color: Color(0xFF1B2A72), size: 20),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Membuka email rekruter...')),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
-        loading: () => SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            children: [
-              LoadingSkeleton.card(height: 120),
-              const SizedBox(height: AppSpacing.lg),
-              LoadingSkeleton.card(height: 160),
-            ],
-          ),
-        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => ErrorStateWidget(
           message: err.toString(),
           onRetry: () => ref.invalidate(applicationDetailProvider(widget.applicationId)),
@@ -239,63 +444,143 @@ class _ApplicationDetailScreenState extends ConsumerState<ApplicationDetailScree
     );
   }
 
-  Color _getStatusBgColor(String status) {
-    switch (status) {
-      case 'accepted':
-        return AppColors.successLight;
-      case 'interview_scheduled':
-        return AppColors.warningLight;
-      case 'rejected':
-        return AppColors.errorLight;
-      default:
-        return AppColors.lightSurface;
-    }
+  Widget _buildChip(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF1F5F9),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 13, color: const Color(0xFF64748B)),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: Color(0xFF334155)),
+          ),
+        ],
+      ),
+    );
   }
 
-  Color _getStatusBorderColor(String status) {
-    switch (status) {
-      case 'accepted':
-        return AppColors.success;
-      case 'interview_scheduled':
-        return AppColors.warning;
-      case 'rejected':
-        return AppColors.error;
-      default:
-        return AppColors.lightBorder;
-    }
-  }
-
-  Color _getStatusTextColor(String status) {
-    switch (status) {
-      case 'accepted':
-        return AppColors.success;
-      case 'interview_scheduled':
-        return const Color(0xFFB45309);
-      case 'rejected':
-        return AppColors.error;
-      default:
-        return AppColors.primary;
-    }
-  }
-
-  String _getStatusDescription(String status) {
-    switch (status) {
-      case 'submitted':
-        return 'Lamaran Anda telah terkirim dan sedang menunggu verifikasi awal HRD perusahaan.';
-      case 'reviewing':
-        return 'Tim rekrutmen sedang memeriksa kualifikasi sertifikat dan pengalaman kerja Anda.';
-      case 'shortlisted':
-        return 'Selamat! Berkas Anda masuk ke daftar pendek kandidat potensial.';
-      case 'interview_scheduled':
-        return 'Perusahaan telah menentukan jadwal wawancara langsung/online untuk Anda.';
-      case 'accepted':
-        return 'Selamat! Anda diterima bekerja di posisi ini. Tunggu arahan kontrak dari BUJP.';
-      case 'rejected':
-        return 'Mohon maaf, kualifikasi Anda belum sesuai dengan kebutuhan lowongan ini saat ini.';
-      case 'withdrawn':
-        return 'Lamaran pekerjaan telah dibatalkan atas permintaan Anda.';
-      default:
-        return '';
-    }
+  Widget _buildTimelineStep({
+    required bool isDone,
+    required bool isCurrent,
+    bool isLast = false,
+    String? badge,
+    required String title,
+    required String date,
+    String? subtitle,
+    String? locationBox,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            Container(
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isDone
+                    ? const Color(0xFF16A34A)
+                    : isCurrent
+                        ? const Color(0xFF1B2A72)
+                        : const Color(0xFFE2E8F0),
+              ),
+              child: Center(
+                child: isDone
+                    ? const Icon(Icons.check, size: 14, color: Colors.white)
+                    : isCurrent
+                        ? Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                          )
+                        : null,
+              ),
+            ),
+            if (!isLast)
+              Container(
+                width: 2,
+                height: locationBox != null ? 100 : 54,
+                color: const Color(0xFFCBD5E1),
+              ),
+          ],
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1E293B),
+                    ),
+                  ),
+                  if (badge != null)
+                    Text(
+                      badge,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF64748B),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 2),
+              Text(
+                date,
+                style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+              ),
+              if (subtitle != null) ...[
+                const SizedBox(height: 3),
+                Text(
+                  subtitle,
+                  style: const TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8)),
+                ),
+              ],
+              if (locationBox != null) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.business, color: Color(0xFF1B2A72), size: 18),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          locationBox,
+                          style: const TextStyle(fontSize: 11.5, color: Color(0xFF334155), height: 1.3),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

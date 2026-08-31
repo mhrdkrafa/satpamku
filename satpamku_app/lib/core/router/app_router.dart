@@ -16,6 +16,7 @@ import '../../features/employer/screens/employer_applicants_screen.dart';
 import '../../features/employer/screens/employer_dashboard_screen.dart';
 import '../../features/employer/screens/employer_jobs_screen.dart';
 import '../../features/employer/screens/employer_profile_screen.dart';
+import '../../features/jobs/screens/company_detail_screen.dart';
 import '../../features/jobs/screens/home_screen.dart';
 import '../../features/jobs/screens/job_detail_screen.dart';
 import '../../features/jobs/screens/search_screen.dart';
@@ -130,6 +131,15 @@ class AppRouter {
         builder: (context, state) {
           final slug = state.pathParameters['slug'] ?? '';
           return JobDetailScreen(slug: slug);
+        },
+      ),
+      GoRoute(
+        path: '/companies/:name',
+        name: 'company_detail',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final name = state.pathParameters['name'] ?? '';
+          return CompanyDetailScreen(companyName: Uri.decodeComponent(name));
         },
       ),
       GoRoute(

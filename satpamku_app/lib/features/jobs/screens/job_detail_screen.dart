@@ -384,57 +384,61 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                 const SizedBox(height: 16),
 
                 // SECTION 4: Company Profile Box
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF1F5F9),
-                              borderRadius: BorderRadius.circular(8),
+                InkWell(
+                  onTap: () => context.push('/companies/${Uri.encodeComponent(job.companyName)}'),
+                  borderRadius: BorderRadius.circular(14),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F5F9),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.business, color: Color(0xFF1B2A72), size: 24),
                             ),
-                            child: const Icon(Icons.business, color: Color(0xFF1B2A72), size: 24),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  job.companyName,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF1B2A72),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    job.companyName,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF1B2A72),
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 2),
-                                const Text(
-                                  'Badan Usaha Jasa Pengamanan (BUJP)',
-                                  style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
-                                ),
-                              ],
+                                  const SizedBox(height: 2),
+                                  const Text(
+                                    'Badan Usaha Jasa Pengamanan (BUJP)',
+                                    style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const Icon(Icons.chevron_right, color: Color(0xFF94A3B8)),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        '${job.companyName} adalah penyedia layanan pengamanan terpercaya bersertifikasi Mabes Polri dengan ribuan personil satpam handal.',
-                        style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), height: 1.4),
-                      ),
-                    ],
+                            const Icon(Icons.chevron_right, color: Color(0xFF94A3B8)),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          '${job.companyName} adalah penyedia layanan pengamanan terpercaya bersertifikasi Mabes Polri dengan ribuan personil satpam handal.',
+                          style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), height: 1.4),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 30),
