@@ -431,36 +431,54 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _showLocationPicker() {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Pilih Wilayah Penugasan',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1B2A72)),
+        return Container(
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.65),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFCBD5E1),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-                const SizedBox(height: 12),
-                ...['Jakarta Selatan', 'Jakarta Pusat', 'Jakarta Barat', 'Jakarta Utara', 'Jakarta Timur', 'Bekasi & Cikarang', 'Tangerang', 'Surabaya']
-                    .map(
-                      (loc) => ListTile(
-                        leading: const Icon(Icons.location_city, color: Color(0xFF1B2A72)),
-                        title: Text(loc, style: const TextStyle(fontWeight: FontWeight.w600)),
-                        trailing: _selectedLocation == loc ? const Icon(Icons.check, color: Color(0xFF1B2A72)) : null,
-                        onTap: () {
-                          setState(() => _selectedLocation = loc);
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Pilih Wilayah Penugasan',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1B2A72)),
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: ListView(
+                  children: ['Jakarta Selatan', 'Jakarta Pusat', 'Jakarta Barat', 'Jakarta Utara', 'Jakarta Timur', 'Bekasi & Cikarang', 'Tangerang', 'Surabaya']
+                      .map(
+                        (loc) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.location_city, color: Color(0xFF1B2A72)),
+                          title: Text(loc, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                          trailing: _selectedLocation == loc ? const Icon(Icons.check, color: Color(0xFF1B2A72)) : null,
+                          onTap: () {
+                            setState(() => _selectedLocation = loc);
+                            Navigator.pop(context);
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+            ],
           ),
         );
       },

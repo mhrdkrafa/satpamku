@@ -160,10 +160,40 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: '/notifications',
+        name: 'notifications',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
         path: '/edit-profile',
         name: 'edit_profile',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: '/profile/edit',
+        name: 'profile_edit',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: '/profile/certifications',
+        name: 'profile_certifications',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const CertificationsScreen(),
+      ),
+      GoRoute(
+        path: '/profile/experiences/add',
+        name: 'profile_add_experience',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AddExperienceScreen(),
+      ),
+      GoRoute(
+        path: '/profile/documents',
+        name: 'profile_documents',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const DocumentsScreen(),
       ),
       GoRoute(
         path: '/experiences',
