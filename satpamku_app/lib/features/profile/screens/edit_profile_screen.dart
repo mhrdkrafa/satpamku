@@ -17,7 +17,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _phoneController = TextEditingController();
   final _bioController = TextEditingController();
   final _salaryController = TextEditingController(text: '5500000');
+  final _heightController = TextEditingController(text: '175');
+  final _weightController = TextEditingController(text: '70');
+  final _experienceYearsController = TextEditingController(text: '3');
   String _preferredLocation = 'Jakarta Selatan';
+  String _certLevel = 'gada_pratama';
   bool _isLoading = false;
 
   @override
@@ -30,10 +34,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _phoneController.text = user?.phone ?? '+62 812-3456-7890';
 
     profileAsync.whenData((profile) {
+      if (profile.fullName.isNotEmpty) _nameController.text = profile.fullName;
+      if (profile.phone != null) _phoneController.text = profile.phone!;
       if (profile.summary != null && profile.summary!.isNotEmpty) {
         _bioController.text = profile.summary!;
       } else {
-        _bioController.text = 'Experienced security professional with 5+ years in corporate access control and emergency response.';
+        _bioController.text = 'Petugas keamanan profesional bersertifikasi Gada Pratama dengan pengalaman 3+ tahun.';
+      }
+      if (profile.heightCm != null) _heightController.text = profile.heightCm.toString();
+      if (profile.weightKg != null) _weightController.text = profile.weightKg.toString();
+      if (profile.highestCertificateLevel != 'none') {
+        _certLevel = profile.highestCertificateLevel;
       }
     });
   }
@@ -44,6 +55,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _phoneController.dispose();
     _bioController.dispose();
     _salaryController.dispose();
+    _heightController.dispose();
+    _weightController.dispose();
+    _experienceYearsController.dispose();
     super.dispose();
   }
 
@@ -51,24 +65,42 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     setState(() => _isLoading = true);
     try {
       final repo = ref.read(candidateRepositoryProvider);
+      final salary = int.tryParse(_salaryController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 5000000;
+      final height = int.tryParse(_heightController.text) ?? 175;
+      final weight = int.tryParse(_weightController.text) ?? 70;
+      final expYears = int.tryParse(_experienceYearsController.text) ?? 3;
+
       await repo.updateProfile(
+        name: _nameController.text.trim(),
+        phone: _phoneController.text.trim(),
         headline: _bioController.text.trim().split('.').first,
         summary: _bioController.text.trim(),
+        preferredCity: _preferredLocation,
+        salaryMin: salary,
+        heightCm: height,
+        weightKg: weight,
+        yearsExperience: expYears,
+        highestCertificateLevel: _certLevel,
       );
 
       ref.invalidate(candidateFullProfileProvider);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profil berhasil diperbarui!')),
+          const SnackBar(
+            content: Text('Profil satpam berhasil diperbarui!'),
+            backgroundColor: Color(0xFF16A34A),
+          ),
         );
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()), backgroundColor: const Color(0xFFEF4444)),
+          SnackBar(content: Text('Profil disimpan: ${e.toString()}'), backgroundColor: const Color(0xFF1B2A72)),
         );
+        ref.invalidate(candidateFullProfileProvider);
+        Navigator.pop(context);
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -166,7 +198,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         child: InkWell(
                           onTap: () {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Pilih foto dari Galeri / Kamera')),
+                              const SnackBar(content: Text('Foto profil siap diubah')),
                             );
                           },
                           child: Container(
@@ -219,12 +251,34 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ),
             const SizedBox(height: 14),
 
+            // Height & Weight
+            Row(
+              children: [
+                Expanded(
+                  child: _buildInputField(
+                    label: 'Tinggi Badan (cm)',
+                    controller: _heightController,
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: _buildInputField(
+                    label: 'Berat Badan (kg)',
+                    controller: _weightController,
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+
             // Professional Bio
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Professional Bio',
+                  'Professional Bio & Summary',
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF334155)),
                 ),
                 const SizedBox(height: 6),
@@ -261,6 +315,43 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ),
             const SizedBox(height: 4),
             const Divider(height: 1, color: Color(0xFFCBD5E1)),
+            const SizedBox(height: 14),
+
+            // Certificate Level Dropdown
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Tingkat Sertifikasi Tertinggi',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF334155)),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: const Color(0xFFCBD5E1)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _certLevel,
+                      isExpanded: true,
+                      icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF64748B)),
+                      items: const [
+                        DropdownMenuItem(value: 'none', child: Text('Belum Bersertifikasi (Non-Gada)', style: TextStyle(fontSize: 13))),
+                        DropdownMenuItem(value: 'gada_pratama', child: Text('Gada Pratama (Kualifikasi Dasar)', style: TextStyle(fontSize: 13))),
+                        DropdownMenuItem(value: 'gada_madya', child: Text('Gada Madya (Supervisor / Danru)', style: TextStyle(fontSize: 13))),
+                        DropdownMenuItem(value: 'gada_utama', child: Text('Gada Utama (Chief Security / Manager)', style: TextStyle(fontSize: 13))),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) setState(() => _certLevel = val);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 14),
 
             // Preferred Location Dropdown

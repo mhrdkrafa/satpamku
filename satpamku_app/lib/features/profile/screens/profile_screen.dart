@@ -342,6 +342,21 @@ class ProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 14),
 
+              // Dokumen & Berkas Tile
+              ListTile(
+                tileColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: const BorderSide(color: Color(0xFFE2E8F0)),
+                ),
+                leading: const Icon(Icons.folder_shared_outlined, color: Color(0xFF1B2A72)),
+                title: const Text('Dokumen & Berkas (KTP, SKCK, CV)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5)),
+                subtitle: const Text('Kelola berkas verifikasi dan lamaran kerja', style: TextStyle(fontSize: 11.5, color: Color(0xFF64748B))),
+                trailing: const Icon(Icons.chevron_right, color: Color(0xFF94A3B8)),
+                onTap: () => context.push('/profile/documents'),
+              ),
+              const SizedBox(height: 10),
+
               // Settings & Logout Button
               ListTile(
                 tileColor: Colors.white,

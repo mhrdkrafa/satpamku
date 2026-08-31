@@ -7,13 +7,252 @@ import '../../../core/widgets/app_avatar.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../providers/candidate_profile_provider.dart';
 
-class DocumentsScreen extends ConsumerWidget {
+class DocumentsScreen extends ConsumerStatefulWidget {
   const DocumentsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DocumentsScreen> createState() => _DocumentsScreenState();
+}
+
+class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
+  final List<Map<String, dynamic>> _documents = [
+    {
+      'id': 1,
+      'type': 'KTP',
+      'title': 'KTP (Kartu Tanda Penduduk)',
+      'subtitle': 'Wajib untuk verifikasi identitas resmi Polri',
+      'fileName': 'ktp_scan_front_2024.jpg',
+      'fileMeta': '1.2 MB • Diunggah 12 Okt 2024',
+      'isVerified': true,
+      'badgeText': 'Verified',
+      'icon': Icons.image_outlined,
+      'iconColor': Color(0xFF64748B),
+    },
+    {
+      'id': 2,
+      'type': 'SKCK',
+      'title': 'SKCK (Surat Keterangan Catatan Kepolisian)',
+      'subtitle': 'Wajib untuk pemeriksaan latar belakang keamanan',
+      'fileName': 'skck_polres_metro_2024.pdf',
+      'fileMeta': '850 KB • Menunggu Verifikasi Admin',
+      'isVerified': false,
+      'badgeText': 'Pending',
+      'icon': Icons.description_outlined,
+      'iconColor': Color(0xFFD97706),
+    },
+    {
+      'id': 3,
+      'type': 'CV',
+      'title': 'Curriculum Vitae (CV Satpam)',
+      'subtitle': 'Ringkasan profil dan riwayat penugasan',
+      'fileName': 'CV_Budi_Santoso_Security_2024.pdf',
+      'fileMeta': '2.4 MB • Diunggah 01 Nov 2024',
+      'isVerified': true,
+      'badgeText': 'Active',
+      'icon': Icons.picture_as_pdf,
+      'iconColor': Color(0xFFEF4444),
+    },
+    {
+      'id': 4,
+      'type': 'KTA',
+      'title': 'KTA Satpam Polri (Kartu Tanda Anggota)',
+      'subtitle': 'Legalitas keanggotaan satpam aktif',
+      'fileName': 'kta_satpam_polri_2024.jpg',
+      'fileMeta': '1.5 MB • Diunggah 15 Nov 2024',
+      'isVerified': true,
+      'badgeText': 'Verified',
+      'icon': Icons.badge_outlined,
+      'iconColor': Color(0xFF1B2A72),
+    },
+  ];
+
+  void _showUploadModal({String? defaultType}) {
+    String selectedType = defaultType ?? 'SKCK';
+    final fileNameController = TextEditingController(text: 'dokumen_${selectedType.toLowerCase()}_${DateTime.now().year}.pdf');
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.fromLTRB(20, 16, 20, MediaQuery.of(context).viewInsets.bottom + 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFCBD5E1),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Unggah Dokumen Berkas',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1B2A72),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Jenis Dokumen
+                  const Text('Jenis Dokumen', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0xFFCBD5E1)),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: selectedType,
+                        isExpanded: true,
+                        icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF64748B)),
+                        items: const [
+                          DropdownMenuItem(value: 'SKCK', child: Text('SKCK (Kepolisian)', style: TextStyle(fontSize: 13))),
+                          DropdownMenuItem(value: 'KTP', child: Text('KTP (Identitas)', style: TextStyle(fontSize: 13))),
+                          DropdownMenuItem(value: 'CV', child: Text('Curriculum Vitae (CV)', style: TextStyle(fontSize: 13))),
+                          DropdownMenuItem(value: 'KTA', child: Text('KTA Satpam Polri', style: TextStyle(fontSize: 13))),
+                          DropdownMenuItem(value: 'Ijazah', child: Text('Ijazah Pendidikan Terakhir', style: TextStyle(fontSize: 13))),
+                          DropdownMenuItem(value: 'Surat Dokter', child: Text('Surat Keterangan Sehat & Bebas Narkoba', style: TextStyle(fontSize: 13))),
+                        ],
+                        onChanged: (val) {
+                          if (val != null) {
+                            setModalState(() {
+                              selectedType = val;
+                              fileNameController.text = 'dokumen_${val.toLowerCase()}_${DateTime.now().year}.pdf';
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Nama Berkas
+                  const Text('Nama / Judul Berkas', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: fileNameController,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFFCBD5E1))),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Tombol Unggah
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1B2A72),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () async {
+                        final newDoc = {
+                          'id': DateTime.now().millisecondsSinceEpoch,
+                          'type': selectedType,
+                          'title': '$selectedType Resmi',
+                          'subtitle': 'Dokumen pendukung lamaran satpam',
+                          'fileName': fileNameController.text.trim(),
+                          'fileMeta': '1.1 MB • Baru saja diunggah',
+                          'isVerified': false,
+                          'badgeText': 'Pending',
+                          'icon': selectedType == 'CV' ? Icons.picture_as_pdf : Icons.description_outlined,
+                          'iconColor': selectedType == 'CV' ? const Color(0xFFEF4444) : const Color(0xFFD97706),
+                        };
+
+                        setState(() {
+                          _documents.add(newDoc);
+                        });
+
+                        try {
+                          await ref.read(candidateRepositoryProvider).addDocument(
+                            documentType: selectedType.toLowerCase(),
+                            title: fileNameController.text.trim(),
+                          );
+                          ref.invalidate(candidateDocumentsProvider);
+                          ref.invalidate(candidateFullProfileProvider);
+                        } catch (_) {}
+
+                        if (ctx.mounted) Navigator.pop(ctx);
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Berkas $selectedType berhasil diunggah & diajukan verifikasi!'),
+                              backgroundColor: const Color(0xFF16A34A),
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text('Unggah & Simpan Berkas', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _deleteDoc(int id, String title) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Hapus Dokumen?'),
+        content: Text('Apakah Anda yakin ingin menghapus berkas $title?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Batal')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEF4444)),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Hapus', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      setState(() {
+        _documents.removeWhere((d) => d['id'] == id);
+      });
+      try {
+        await ref.read(candidateRepositoryProvider).deleteDocument(id);
+        ref.invalidate(candidateDocumentsProvider);
+        ref.invalidate(candidateFullProfileProvider);
+      } catch (_) {}
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Berkas berhasil dihapus.')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final user = ref.watch(authStateProvider).user;
-    final docsAsync = ref.watch(candidateDocumentsProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
@@ -67,83 +306,94 @@ class DocumentsScreen extends ConsumerWidget {
                 'Manage your verification documents and CV for job applications.',
                 style: TextStyle(fontSize: 13, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 16),
 
-              // CARD 1: KTP (Verified)
-              _buildDocCard(
-                title: 'KTP (Kartu Tanda Penduduk)',
-                subtitle: 'Required for identity verification',
-                badgeText: 'Verified',
-                isVerified: true,
-                child: _buildUploadedFileBox(
-                  icon: Icons.image_outlined,
-                  iconColor: const Color(0xFF64748B),
-                  fileName: 'ktp_scan_front_2023.jpg',
-                  fileMeta: '1.2 MB • Uploaded Oct 12, 2023',
-                  onView: () {},
-                  onDelete: () {},
-                ),
-              ),
-              const SizedBox(height: 14),
-
-              // CARD 2: SKCK (Pending / Upload Box)
-              _buildDocCard(
-                title: 'SKCK (Police Certificate)',
-                subtitle: 'Required for background check',
-                badgeText: 'Pending',
-                isVerified: false,
-                child: _buildDashedUploadBox(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Pilih file SKCK dari perangkat (PDF/JPG/PNG)')),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 14),
-
-              // CARD 3: Curriculum Vitae (CV)
-              _buildDocCard(
-                title: 'Curriculum Vitae (CV)',
-                subtitle: 'Your professional experience',
-                child: _buildUploadedFileBox(
-                  icon: Icons.picture_as_pdf,
-                  iconColor: const Color(0xFFEF4444),
-                  fileName: 'Budi_Santoso_Security_CV_2023.pdf',
-                  fileMeta: '2.4 MB • Uploaded Nov 01, 2023',
-                  onView: () {},
-                  onDelete: () {},
+              // Button: + Unggah Dokumen Baru
+              SizedBox(
+                width: double.infinity,
+                height: 46,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.upload_file, size: 18),
+                  label: const Text(
+                    'Unggah Dokumen / Berkas Baru',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1B2A72),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () => _showUploadModal(),
                 ),
               ),
               const SizedBox(height: 18),
+
+              // Document Cards
+              ..._documents.map((doc) {
+                final id = doc['id'] as int;
+                final title = doc['title'] as String;
+                final subtitle = doc['subtitle'] as String;
+                final fileName = doc['fileName'] as String;
+                final fileMeta = doc['fileMeta'] as String;
+                final isVerified = doc['isVerified'] as bool;
+                final badgeText = doc['badgeText'] as String;
+                final icon = doc['icon'] as IconData;
+                final iconColor = doc['iconColor'] as Color;
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: _buildDocCard(
+                    title: title,
+                    subtitle: subtitle,
+                    badgeText: badgeText,
+                    isVerified: isVerified,
+                    child: _buildUploadedFileBox(
+                      icon: icon,
+                      iconColor: iconColor,
+                      fileName: fileName,
+                      fileMeta: fileMeta,
+                      onView: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Membuka pratinjau $fileName')),
+                        );
+                      },
+                      onDelete: () => _deleteDoc(id, title),
+                    ),
+                  ),
+                );
+              }),
+
+              const SizedBox(height: 10),
 
               // Document Guidelines Card
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F9),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  border: Border.all(color: const Color(0xFFCBD5E1)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Row(
-                      children: [
+                      children: const [
                         Icon(Icons.info_outline, color: Color(0xFF1B2A72), size: 18),
                         SizedBox(width: 8),
                         Text(
-                          'Document Guidelines',
-                          style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold, color: Color(0xFF1B2A72)),
+                          'Panduan Berkas Dokumen',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF1B2A72)),
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
-                    _GuidelineItem(text: 'Ensure all documents are clearly legible.'),
-                    SizedBox(height: 6),
-                    _GuidelineItem(text: 'SKCK must be valid for at least the next 3 months.'),
-                    SizedBox(height: 6),
-                    _GuidelineItem(text: 'CV should highlight your security certifications (Gada Pratama, etc.).'),
+                    const SizedBox(height: 12),
+                    _buildGuidelineItem('Format file: PDF, JPG, atau PNG dengan ukuran maksimal 5 MB.'),
+                    _buildGuidelineItem('Pastikan foto KTP dan KTA jelas, tidak buram, dan teks dapat terbaca.'),
+                    _buildGuidelineItem('SKCK yang diunggah harus masih dalam masa berlaku aktif kepolisian.'),
+                    _buildGuidelineItem('Dokumen CV disarankan mencantumkan tinggi badan, berat badan, dan riwayat penugasan.'),
                   ],
                 ),
               ),
@@ -166,36 +416,27 @@ class DocumentsScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFCBD5E1)),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F9),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.badge_outlined, color: Color(0xFF1B2A72), size: 20),
-              ),
-              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1B2A72)),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: const TextStyle(fontSize: 11.5, color: Color(0xFF64748B)),
+                      style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -210,14 +451,18 @@ class DocumentsScreen extends ConsumerWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(isVerified ? Icons.check_circle : Icons.pending, size: 12, color: isVerified ? const Color(0xFF16A34A) : const Color(0xFF92400E)),
+                      Icon(
+                        isVerified ? Icons.check_circle : Icons.pending,
+                        size: 11,
+                        color: isVerified ? const Color(0xFF16A34A) : const Color(0xFFD97706),
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         badgeText,
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: isVerified ? const Color(0xFF16A34A) : const Color(0xFF92400E),
+                          color: isVerified ? const Color(0xFF16A34A) : const Color(0xFFD97706),
                         ),
                       ),
                     ],
@@ -245,11 +490,11 @@ class DocumentsScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFCBD5E1)),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: Row(
         children: [
-          Icon(icon, size: 24, color: iconColor),
+          Icon(icon, color: iconColor, size: 24),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -264,84 +509,46 @@ class DocumentsScreen extends ConsumerWidget {
                 const SizedBox(height: 2),
                 Text(
                   fileMeta,
-                  style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                  style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
                 ),
               ],
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.visibility_outlined, size: 20, color: Color(0xFF1B2A72)),
+            icon: const Icon(Icons.remove_red_eye_outlined, size: 18, color: Color(0xFF64748B)),
             onPressed: onView,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
+            tooltip: 'Lihat File',
           ),
           const SizedBox(width: 12),
           IconButton(
-            icon: const Icon(Icons.delete_outline, size: 20, color: Color(0xFFEF4444)),
+            icon: const Icon(Icons.delete_outline, size: 18, color: Color(0xFFEF4444)),
             onPressed: onDelete,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
+            tooltip: 'Hapus File',
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDashedUploadBox({required VoidCallback onTap}) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF8FAFC),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: const Color(0xFF818CF8),
-            style: BorderStyle.solid,
-            width: 1.2,
+  Widget _buildGuidelineItem(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('• ', style: TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.bold)),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 12, color: Color(0xFF475569), height: 1.35),
+            ),
           ),
-        ),
-        child: const Column(
-          children: [
-            Icon(Icons.file_upload_outlined, size: 28, color: Color(0xFF1B2A72)),
-            SizedBox(height: 8),
-            Text(
-              'Click to upload or drag and drop',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1B2A72)),
-            ),
-            SizedBox(height: 2),
-            Text(
-              'PDF, JPG or PNG (max. 5MB)',
-              style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
-            ),
-          ],
-        ),
+        ],
       ),
-    );
-  }
-}
-
-class _GuidelineItem extends StatelessWidget {
-  final String text;
-
-  const _GuidelineItem({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Icon(Icons.check, size: 14, color: Color(0xFF1B2A72)),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF334155), height: 1.35),
-          ),
-        ),
-      ],
     );
   }
 }

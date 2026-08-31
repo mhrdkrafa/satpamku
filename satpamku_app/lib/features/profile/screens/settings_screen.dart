@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../../core/widgets/app_avatar.dart';
 import '../../auth/providers/auth_provider.dart';
 
@@ -150,14 +151,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     icon: Icons.notifications_none,
                     title: 'Notifications',
                     subtitle: 'Push & Email',
-                    onTap: () {},
+                    onTap: () => context.push('/notifications'),
                   ),
+                  const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                  _buildThemeModeTile(),
                   const Divider(height: 1, color: Color(0xFFF1F5F9)),
                   _buildSettingTile(
                     icon: Icons.language,
                     title: 'Language',
                     subtitle: 'English (US) / Bahasa Indonesia',
-                    onTap: () {},
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Bahasa Indonesia terpilih sebagai bahasa default.')),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -278,6 +285,108 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildThemeModeTile() {
+    final themeMode = ref.watch(themeModeProvider);
+    String subtitle;
+    IconData icon;
+
+    switch (themeMode) {
+      case ThemeMode.dark:
+        subtitle = 'Mode Gelap (Aktif)';
+        icon = Icons.dark_mode_outlined;
+        break;
+      case ThemeMode.light:
+        subtitle = 'Mode Terang (Aktif)';
+        icon = Icons.light_mode_outlined;
+        break;
+      case ThemeMode.system:
+        subtitle = 'Mengikuti Pengaturan HP (Sistem)';
+        icon = Icons.brightness_auto_outlined;
+        break;
+    }
+
+    return _buildSettingTile(
+      icon: icon,
+      title: 'Tampilan & Tema',
+      subtitle: subtitle,
+      onTap: _showThemeSelector,
+    );
+  }
+
+  void _showThemeSelector() {
+    final currentMode = ref.read(themeModeProvider);
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFCBD5E1),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Pilih Tema Tampilan',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1B2A72),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ListTile(
+                  leading: const Icon(Icons.brightness_auto, color: Color(0xFF1B2A72)),
+                  title: const Text('Otomatis (Ikuti Sistem HP)', style: TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: const Text('Menyesuaikan tema terang/gelap pada perangkat Anda', style: TextStyle(fontSize: 12)),
+                  trailing: currentMode == ThemeMode.system ? const Icon(Icons.check_circle, color: Color(0xFF1B2A72)) : null,
+                  onTap: () {
+                    ref.read(themeModeProvider.notifier).setThemeMode(ThemeMode.system);
+                    Navigator.pop(ctx);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.light_mode, color: Color(0xFFEAB308)),
+                  title: const Text('Mode Terang (Light Mode)', style: TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: const Text('Tampilan bersih berlatar putih/cerah', style: TextStyle(fontSize: 12)),
+                  trailing: currentMode == ThemeMode.light ? const Icon(Icons.check_circle, color: Color(0xFF1B2A72)) : null,
+                  onTap: () {
+                    ref.read(themeModeProvider.notifier).setThemeMode(ThemeMode.light);
+                    Navigator.pop(ctx);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.dark_mode, color: Color(0xFF6366F1)),
+                  title: const Text('Mode Gelap (Dark Mode)', style: TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: const Text('Tampilan gelap elegan untuk kenyamanan mata', style: TextStyle(fontSize: 12)),
+                  trailing: currentMode == ThemeMode.dark ? const Icon(Icons.check_circle, color: Color(0xFF1B2A72)) : null,
+                  onTap: () {
+                    ref.read(themeModeProvider.notifier).setThemeMode(ThemeMode.dark);
+                    Navigator.pop(ctx);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
